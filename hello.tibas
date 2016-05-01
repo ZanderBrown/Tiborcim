@@ -1,0 +1,9 @@
+' Hi
+PRINT "Hello, World"
+PRINT "?!"
+
+a = 1
+
+IF (a == 1) THEN
+PRINT "If"
+END IF
