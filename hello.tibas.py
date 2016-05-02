@@ -1,6 +1,14 @@
 from microbit import *
+#' Hi
+
 display.scroll("Hello, World")
 display.scroll("?!")
-if ((a == 1) T):
+
+
+a = 1
+
+
+
+	if ((a == 1)):
 	display.scroll("If")
 
