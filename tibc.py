@@ -14,35 +14,49 @@ class compiler:
         self.content = self.inputFile.readlines()
 
         self.indentLevel = 0;
+        self.python_block = False
 
-        print(self.content)
-        print('// Convert')
-        print('from microbit import *')
-        self.outputFile.write('from microbit import *\n')
+        self.print_output('from microbit import *')
         for line in self.content:
-            m = re.search('(?:^PRINT)', line)
-            if m is not None:
-                self.print_output('display.scroll(' + str.strip(line[5:]) + ')')
-                continue
+            if self.python_block is False:
+                m = re.search('(?:^PRINT)', line)
+                if m is not None:
+                    self.print_output('display.scroll(' + str.strip(line[5:]) + ')')
+                    continue
 
-            m = re.search('(?:^IF)', line)
-            if m is not None:
-                self.print_output('if (' + str.strip(line[2:-5]) + '):')
-                self.indentLevel += 1
-                continue
+                m = re.search('(?:^IF)', line)
+                if m is not None:
+                    
+                    line = re.sub('=', ' is ', line)
+                    print(">" + line)
+                    self.print_output('if (' + str.strip(line[2:-5]) + '):')
+                    self.indentLevel += 1
+                    continue
 
-            m = re.search('(?:^\')', line)
-            if m is not None:
-                self.print_output('#' + line)
-                continue
+                m = re.search('(?:^\')', line)
+                if m is not None:
+                    self.print_output('#' + line)
+                    continue
 
-            m = re.search('(?:^END IF)', line)
-            if m is not None:
-                self.indentLevel -= 1
-                self.print_output("")
-                continue
+                m = re.search('(?:^END IF)', line)
+                if m is not None:
+                    self.indentLevel -= 1
+                    self.print_output("")
+                    continue
 
-            self.print_output(line)
+                m = re.search('(?:^PYTHON)', line)
+                if m is not None:
+                    self.python_block = True
+                    continue
+
+            else:
+
+                m = re.search('(?:^END PYTHON)', line)
+                if m is not None:
+                    self.python_block = False
+                    continue
+                else:
+                    self.print_output(line)
         #(?:^PRINT)\W(["'])(?:(?=(\\?))\2.)*?\1
         self.inputFile.close()
         self.outputFile.close()

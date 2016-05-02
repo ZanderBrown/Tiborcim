@@ -2,9 +2,11 @@
 PRINT "Hello, World"
 PRINT "?!"
 
+PYTHON
 a = 1
+END PYTHON
 
-IF (a == 1) THEN
+IF (a = 1) THEN
 PRINT "If"
 END IF
 
