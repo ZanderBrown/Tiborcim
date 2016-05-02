@@ -6,11 +6,12 @@ class TibcStatus(Enum):
     SUCCESS = 3
 
 class compiler:
-    def __init__(self, file):
+    def __init__(self, file, output = None):
         import re
         self.inputFile = open(file, "r")
-        self.outputFile = open(file + '.py', "w")
-        #print(inputFile.read())
+        if output is None:
+            output = file + '.py'
+        self.outputFile = open(output, "w")
         self.content = self.inputFile.readlines()
 
         self.indentLevel = 0;
@@ -26,7 +27,6 @@ class compiler:
 
                 m = re.search('(?:^IF)', line)
                 if m is not None:
-                    
                     line = re.sub('=', ' is ', line)
                     print(">" + line)
                     self.print_output('if (' + str.strip(line[2:-5]) + '):')
