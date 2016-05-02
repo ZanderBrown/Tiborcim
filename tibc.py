@@ -18,31 +18,31 @@ class compiler:
         print(self.content)
         print('// Convert')
         print('from microbit import *')
-        self.outputFile.write('from microbit import *\r\n')
+        self.outputFile.write('from microbit import *\n')
         for line in self.content:
-            output = None
             m = re.search('(?:^PRINT)', line)
-            if m != None:
-                output = 'display.scroll(' + str.strip(line[5:]) + ')'
-                m = None
+            if m is not None:
+                self.print_output('display.scroll(' + str.strip(line[5:]) + ')')
+                continue
+
             m = re.search('(?:^IF)', line)
             if m is not None:
-                output = 'if (' + str.strip(line[2:-5]) + '):'
+                self.print_output('if (' + str.strip(line[2:-5]) + '):')
                 self.indentLevel += 1
-                m = None
+                continue
+
             m = re.search('(?:^\')', line)
             if m is not None:
-                output = '#' + line
-                m = None
+                self.print_output('#' + line)
+                continue
+
             m = re.search('(?:^END IF)', line)
             if m is not None:
                 self.indentLevel -= 1
-                output = ""
-                m = None
+                self.print_output("")
+                continue
 
-            if output is None:
-                output = line
-            self.print_output(output)
+            self.print_output(line)
         #(?:^PRINT)\W(["'])(?:(?=(\\?))\2.)*?\1
         self.inputFile.close()
         self.outputFile.close()
@@ -51,7 +51,7 @@ class compiler:
         for i in range(0, self.indentLevel):
             indents += "\t"
         print(indents + text)
-        self.outputFile.write(indents + text + "\r\n")
+        self.outputFile.write(indents + text + "\n")
         
 
 def flash(file, path = None):
