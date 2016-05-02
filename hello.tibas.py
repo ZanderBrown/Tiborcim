@@ -3,15 +3,9 @@ from microbit import *
 
 display.scroll("Hello, World")
 display.scroll("?!")
-
-
 a = 1
 
-
-
-if ((a == 1)):
+if ((a  is  1)):
 	display.scroll("If")
-
-
 
 display.scroll('.')
