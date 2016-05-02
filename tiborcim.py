@@ -1,7 +1,7 @@
 from tkinter.ttk import *
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showerror
-from tkinter import messagebox, W, E, N, S, HORIZONTAL, DISABLED
+from tkinter import messagebox, W, E, N, S, HORIZONTAL, DISABLED, NORMAL, END
 from tkinter.scrolledtext import ScrolledText
 
 class MyFrame(Frame):
@@ -13,6 +13,7 @@ class MyFrame(Frame):
         self.master.config(width=450, height=400)
         self.master.rowconfigure(5, weight=1)
         self.master.columnconfigure(5, weight=1)
+
         self.grid(sticky=W)
 
         self.button = Button(self, text="Browse", command=self.load_file, width=10)
@@ -24,15 +25,23 @@ class MyFrame(Frame):
         self.flash_button = Button(self, text="Flash", command=self.flash_file, width=10)
         self.flash_button.grid(row=1, column=2, sticky=W+E+N+S )
 
-        self.iopane = PanedWindow(orient=HORIZONTAL, master=self, width=450, height=400)
+        self.nb = Notebook(self)
+
+        # adding Frames as pages for the ttk.Notebook 
+        # first page, which would get widgets gridded into it
+        page1 = Frame(self.nb)
+        self.nonpython = ScrolledText(page1, state=DISABLED)
+        self.nonpython.pack(expand=1, fill="both")
         
-        self.nonpython = ScrolledText(self.iopane, state=DISABLED)
-        self.iopane.add(self.nonpython)
+        # second page
+        page2 = Frame(self.nb)
+        self.python = ScrolledText(page2, state=DISABLED)
+        self.python.pack(expand=1, fill="both")
 
-        self.python = ScrolledText(self.iopane, state=DISABLED)
-        self.iopane.add(self.python)
+        self.nb.add(page1, text='Tiborcim')
+        self.nb.add(page2, text='Python')
 
-        self.iopane.grid(row=2, column=0, sticky=W, columnspan=3)
+        self.nb.grid(row=2, column=0, sticky=W, columnspan=3)
 
     def load_file(self):
         fname = askopenfilename(filetypes=(("Tiborcim", "*.tibas"),
@@ -41,14 +50,11 @@ class MyFrame(Frame):
             try:
                 self.file = fname
                 self.master.title(fname)
-                try:
-                    f = open(self.file)
-                    self.nonpython.config(state=NORMAL)
-                    self.nonpython.delete(1.0, END)
-                    self.nonpython.insert(END, f.read())
-                    self.nonpython.config(state=DISABLED)
-                except:
-                    print("That's Odd")
+                f = open(self.file)
+                self.nonpython.config(state=NORMAL)
+                self.nonpython.delete(1.0, END)
+                self.nonpython.insert(END, f.read())
+                self.nonpython.config(state=DISABLED)
             except:
                 showerror("Open Source File", "Failed to read file\n'%s'" % fname)
             return

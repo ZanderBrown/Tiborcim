@@ -20,23 +20,29 @@ class compiler:
         print('from microbit import *')
         self.outputFile.write('from microbit import *\r\n')
         for line in self.content:
+            output = None
             m = re.search('(?:^PRINT)', line)
             if m != None:
-                self.print_output('display.scroll(' + str.strip(line[5:]) + ')')
-                #print('display.scroll(' + line[5:] + ')')
-                #self.outputFile.write('display.scroll(' + str.strip(line[5:]) + ')\r\n')
+                output = 'display.scroll(' + str.strip(line[5:]) + ')'
                 m = None
             m = re.search('(?:^IF)', line)
             if m is not None:
-                self.print_output('if (' + str.strip(line[2:-5]) + '):')
+                output = 'if (' + str.strip(line[2:-5]) + '):'
                 self.indentLevel += 1
+                m = None
+            m = re.search('(?:^\')', line)
+            if m is not None:
+                output = '#' + line
                 m = None
             m = re.search('(?:^END IF)', line)
             if m is not None:
                 self.indentLevel -= 1
-                self.print_output()
+                output = ""
                 m = None
-                
+
+            if output is None:
+                output = line
+            self.print_output(output)
         #(?:^PRINT)\W(["'])(?:(?=(\\?))\2.)*?\1
         self.inputFile.close()
         self.outputFile.close()
@@ -101,6 +107,10 @@ if __name__ == "__main__":
         parser.add_argument('-p', '--python', default=False, action='store_true',
                             help="File is already Python.")
         args = parser.parse_args(argv)
+        if args.python is False:
+            compiler(args.source)
+            args.source += '.py'
+        flash(args.source, args.target)
     except Exception as ex:
         # The exception of no return. Print the exception information.
         print(ex)
