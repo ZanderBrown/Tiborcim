@@ -10,6 +10,7 @@ class MyFrame(Frame):
         self.file = None;
         self.master.title("Tiborcim")
         self.master.config(width=450, height=400)
+        self.master.iconbitmap('icon.ico')
         
         self.pack(expand=1, fill="both")
 
