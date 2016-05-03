@@ -1,32 +1,45 @@
 from tkinter.ttk import Frame, Button, Notebook
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showerror, showinfo
-from tkinter import DISABLED, NORMAL, END, LEFT
+from tkinter import Menu, DISABLED, NORMAL, END, LEFT
 from tkinter.scrolledtext import ScrolledText
 
-class MyFrame(Frame):
+class CimToolbar(Frame):
+    def __init__(self, parent, *args, **kwargs):
+        Frame.__init__(self, parent)
+
+        self.button = Button(self, text="Browse", command=parent.load_file, width=10)
+        self.button.pack(side=LEFT)
+        
+        self.convert_button = Button(self, text="Convert", command=parent.convert_file, width=10)
+        self.convert_button.pack(side=LEFT)
+        
+        self.flash_button = Button(self, text="Flash", command=parent.flash_file, width=10)
+        self.flash_button.pack(side=LEFT)
+
+class CimApp(Frame):
     def __init__(self):
         Frame.__init__(self)
         self.file = None;
         self.master.title("Tiborcim")
-        self.master.config(width=450, height=400)
         self.master.iconbitmap('icon.ico')
         
         self.pack(expand=1, fill="both")
 
-        self.toolbar = Frame(self)
-        
-        self.button = Button(self.toolbar, text="Browse", command=self.load_file, width=10)
-        self.button.pack(side=LEFT)
-        
-        self.convert_button = Button(self.toolbar, text="Convert", command=self.convert_file, width=10)
-        self.convert_button.pack(side=LEFT)
-        
-        self.flash_button = Button(self.toolbar, text="Flash", command=self.flash_file, width=10)
-        self.flash_button.pack(side=LEFT)
+        menubar = Menu(self.master)
+        self.fileMenu = Menu(self.master, tearoff=0)
+        self.fileMenu.add_command(label="Open...", command=self.load_file,
+                                  underline=1, accelerator="Ctrl+O")
+        self.fileMenu.add_separator()
+        self.fileMenu.add_command(label="Exit", command=self.file_quit, underline=1)
+        menubar.add_cascade(label="File", menu=self.fileMenu, underline=1)
 
+        self.master.config(width=450, height=400, menu=menubar)
+        
+        self.bind_all("<Control-o>", self.load_file)
+
+        self.toolbar = CimToolbar(self)  
         self.toolbar.pack(fill="both")
-
 
         self.nb = Notebook(self)
 
@@ -71,7 +84,7 @@ class MyFrame(Frame):
         except:
             print("That's Odd")
 
-    def flash_file(self):
+    def flash_file(self, event=None):
         from tibc import flash
         from tibc import TibcStatus as status
         result = flash(self.file + '.py')
@@ -80,6 +93,21 @@ class MyFrame(Frame):
         else:
             showerror(title='Failure', message='An Error Occured. Code: %s' % result, parent=self.master)
 
+    def file_quit(self, event=None):
+        self.quit()
+
+_HELP_TEXT = """
+Tiborcim - GUI for Tibc\n
+ (C) Copyright Alexander Brown 2016\r\n
+"""
+
 
 if __name__ == "__main__":
-    MyFrame().mainloop()
+    import argparse, sys
+    argv = sys.argv[1:]
+    try:
+        parser = argparse.ArgumentParser(description=_HELP_TEXT)
+        args = parser.parse_args(argv)
+        CimApp().mainloop()
+    except Exception as ex:
+        print(ex)
