@@ -1,21 +1,8 @@
 from tkinter.ttk import Frame, Button, Notebook
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showerror, showinfo
-from tkinter import Menu, DISABLED, NORMAL, END, LEFT
+from tkinter import Menu, DISABLED, NORMAL, END
 from tkinter.scrolledtext import ScrolledText
-
-class CimToolbar(Frame):
-    def __init__(self, parent, *args, **kwargs):
-        Frame.__init__(self, parent)
-
-        self.button = Button(self, text="Browse", command=parent.load_file, width=10)
-        self.button.pack(side=LEFT)
-        
-        self.convert_button = Button(self, text="Convert", command=parent.convert_file, width=10)
-        self.convert_button.pack(side=LEFT)
-        
-        self.flash_button = Button(self, text="Flash", command=parent.flash_file, width=10)
-        self.flash_button.pack(side=LEFT)
 
 class CimApp(Frame):
     def __init__(self):
@@ -34,12 +21,18 @@ class CimApp(Frame):
         self.fileMenu.add_command(label="Exit", command=self.file_quit, underline=1)
         menubar.add_cascade(label="File", menu=self.fileMenu, underline=1)
 
+        self.menu_program = Menu(self.master, tearoff=0)
+        self.menu_program.add_command(label="Convert", command=self.convert_file,
+                                  underline=1, accelerator="Ctrl+T")
+        self.menu_program.add_separator()
+        self.menu_program.add_command(label="Flash", command=self.flash_file,
+                                      underline=1, accelerator="Ctrl+B")
+        menubar.add_cascade(label="Program", menu=self.menu_program, underline=1)
         self.master.config(width=450, height=400, menu=menubar)
         
-        self.bind_all("<Control-o>", self.load_file)
-
-        self.toolbar = CimToolbar(self)  
-        self.toolbar.pack(fill="both")
+        self.bind_all("<Control-o>", self.load_file_keyb)
+        self.bind_all("<Control-t>", self.convert_file_keyb)
+        self.bind_all("<Control-b>", self.flash_file_keyb)
 
         self.nb = Notebook(self)
 
@@ -72,6 +65,9 @@ class CimApp(Frame):
                 showerror("Open Source File", "Failed to read file\n'%s'" % fname)
             return
 
+    def load_file_keyb(self, event):
+        self.load_file()
+
     def convert_file(self):
         from tibc import compiler as tibc
         tibc(self.file)
@@ -84,7 +80,10 @@ class CimApp(Frame):
         except:
             print("That's Odd")
 
-    def flash_file(self, event=None):
+    def convert_file_keyb(self, event):
+        self.convert_file()
+
+    def flash_file(self):
         from tibc import flash
         from tibc import TibcStatus as status
         result = flash(self.file + '.py')
@@ -93,7 +92,10 @@ class CimApp(Frame):
         else:
             showerror(title='Failure', message='An Error Occured. Code: %s' % result, parent=self.master)
 
-    def file_quit(self, event=None):
+    def flash_file_keyb(self, event):
+        self.flash_file()
+
+    def file_quit(self):
         self.quit()
 
 _HELP_TEXT = """
