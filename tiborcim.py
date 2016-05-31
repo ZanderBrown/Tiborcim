@@ -29,25 +29,39 @@ class CimApp(Frame):
                                       underline=1, accelerator="Ctrl+B")
         menubar.add_cascade(label="Program", menu=self.menu_program, underline=1)
         self.master.config(width=450, height=400, menu=menubar)
-        
+
+        self.menu_view = Menu(self.master, tearoff=0)
+        viewmode = "tiborcim"
+        self.menu_view.add_radiobutton(label="Tiborcim", command=self.view_tiborcim,
+                                       variable=viewmode, value="tiborcim")
+        self.menu_view.add_radiobutton(label="Python", command=self.view_python,
+                                       variable=viewmode, value="python")
+        menubar.add_cascade(label="View", menu=self.menu_view, underline=1)
+
         self.bind_all("<Control-o>", self.load_file_keyb)
         self.bind_all("<Control-t>", self.convert_file_keyb)
         self.bind_all("<Control-b>", self.flash_file_keyb)
 
         self.nb = Notebook(self)
 
-        page1 = Frame(self.nb)
-        self.nonpython = ScrolledText(page1, state=DISABLED)
+        self.page1 = Frame(self.nb)
+        self.nonpython = ScrolledText(self.page1, state=DISABLED)
         self.nonpython.pack(expand=1, fill="both")
         
-        page2 = Frame(self.nb)
-        self.python = ScrolledText(page2, state=DISABLED)
+        self.page2 = Frame(self.nb)
+        self.python = ScrolledText(self.page2, state=DISABLED)
         self.python.pack(expand=1, fill="both")
 
-        self.nb.add(page1, text='Tiborcim')
-        self.nb.add(page2, text='Python')
+        self.nb.add(self.page1, text='Tiborcim')
+        self.nb.add(self.page2, text='Python')
 
         self.nb.pack(expand=1, fill="both")
+
+    def view_tiborcim(self):
+        self.nb.select(self.page1)
+
+    def view_python(self):
+        self.nb.select(self.page2)
 
     def load_file(self):
         fname = askopenfilename(filetypes=(("Tiborcim", "*.tibas"),
