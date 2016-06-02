@@ -20,38 +20,44 @@ class compiler:
         self.print_output('from microbit import *')
         for line in self.content:
             if self.python_block is False:
-                m = re.search('(?:^PRINT)', line)
+                m = re.search('(?:^PRINT)', line.strip())
                 if m is not None:
-                    self.print_output('display.scroll(' + str.strip(line[5:]) + ')')
+                    self.print_output('display.scroll(' + line.strip()[5:].strip() + ')')
                     continue
 
-                m = re.search('(?:^IF)', line)
+                m = re.search('(?:^IF)', line.strip())
                 if m is not None:
-                    line = re.sub('=', ' is ', line)
-                    print(">" + line)
+                    line = re.sub('=', ' == ', line)
                     self.print_output('if (' + str.strip(line[2:-5]) + '):')
                     self.indentLevel += 1
                     continue
 
-                m = re.search('(?:^\')', line)
+                m = re.search('(?:^\')', line.strip())
                 if m is not None:
                     self.print_output('#' + line)
                     continue
 
-                m = re.search('(?:^END IF)', line)
+                m = re.search('(?:^END IF)', line.strip())
                 if m is not None:
                     self.indentLevel -= 1
                     self.print_output("")
                     continue
 
-                m = re.search('(?:^PYTHON)', line)
+                m = re.search('(?:^ELSE)', line.strip())
+                if m is not None:
+                    self.indentLevel -= 1
+                    self.print_output("else:")
+                    self.indentLevel += 1
+                    continue
+
+                m = re.search('(?:^PYTHON)', line.strip())
                 if m is not None:
                     self.python_block = True
                     continue
 
             else:
 
-                m = re.search('(?:^END PYTHON)', line)
+                m = re.search('(?:^END PYTHON)', line.strip())
                 if m is not None:
                     self.python_block = False
                     continue
