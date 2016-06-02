@@ -5,7 +5,7 @@ from tkinter import Menu, DISABLED, NORMAL, END
 from tkinter.scrolledtext import ScrolledText
 
 import logging
-logging.basicConfig(filename='tiborcim.log',level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 class CimFilePage(Notebook):
     def __init__(self, parent):
@@ -161,9 +161,10 @@ class CimApp(Frame):
 
     def close_file(self, event=None):
         logging.debug("Close File")
-        if self.current_file().close():
-            self.file_tabs.forget(self.current_file())
-            self.files.remove(self.current_file)
+        file = self.current_file()
+        if file.close():            
+            self.file_tabs.forget(file)
+            self.files.remove(file)
         
 
     def file_quit(self):
