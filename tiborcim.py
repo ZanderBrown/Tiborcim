@@ -1,5 +1,5 @@
 from tkinter.ttk import Frame, Button, Notebook
-from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import askopenfilename, asksaveasfile
 from tkinter.messagebox import showerror, showinfo, askokcancel
 from tkinter import Menu, DISABLED, NORMAL, END
 from tkinter.scrolledtext import ScrolledText
@@ -23,7 +23,14 @@ class CimFilePage(Notebook):
 
     def save_file(self):
         self.saved = True;
-        logging.debug('Save ' + self.filename)
+        if self.filename is None:
+            self.save_file_as()
+            logging.debug('No Name ' + self.filename)
+        else:
+            logging.debug('Save ' + self.filename)
+            f = open(self.filename, "w")
+            f.write(str(self.text_tiborcim.get(1.0, END)))
+            f.close() 
 
     def convert_file(self):
         from tibc import compiler as tibc
@@ -39,10 +46,12 @@ class CimFilePage(Notebook):
         except:
             logging.warning("That's Odd")
 
-    def save_file_as(self, name):
-        self.saved = True;
-        self.filename = name
-        save_file()
+    def save_file_as(self):
+        f = asksaveasfile(mode='w', defaultextension=".tibas", filetypes=(("Tiborcim", "*.tibas"),("All files", "*.*") ))
+        if f is not None:
+            print(f.name)
+            self.filename = f.name
+            self.save_file()
         
     def load_file(self, name):
         self.saved = True;
@@ -119,16 +128,18 @@ class CimApp(Frame):
         self.master.protocol("WM_DELETE_WINDOW", self.file_quit)
 
         self.file_tabs = Notebook(self)
-        self.nb = CimFilePage(self.file_tabs)
-        self.files.append(self.nb)
-
-        self.file_tabs.add(self.nb, text='Unsaved Script')
         self.file_tabs.pack(expand=1, fill="both")
 
-    def add_file(self, file):
+        self.add_file()
+    def add_file(self, file=None):
         filepage = CimFilePage(self.file_tabs)
-        self.file_tabs.add(filepage, text=file)
-        filepage.load_file(file)
+        if file is None:
+            self.file_tabs.add(filepage, text="Unsaved Script")
+            filepage.saved = False
+            filepage.filename = None
+        else:
+            self.file_tabs.add(filepage, text=file)
+            filepage.load_file(file)
         self.files.append(filepage)
 
     def view_tiborcim(self):
@@ -138,7 +149,7 @@ class CimApp(Frame):
         self.current_file().view_python()
 
     def load_file(self, event=None):
-        fname = askopenfilename(filetypes=(("Tiborcim", "*.tibas"),("All files", "*.*") ))
+        fname = askopenfilename(filetypes=(("Tiborcim", "*.tibas"),("All files", "*.*") ), parent=self.master)
         if fname:
             self.add_file(fname)
 
@@ -175,7 +186,7 @@ class CimApp(Frame):
         self.quit()
 
 _HELP_TEXT = """
-Tiborcim - GUI for Tibc\n
+Tiborcim - GUI for Tibc the TIBORCIM compiler\n
  (C) Copyright Alexander Brown 2016\r\n
 """
 
