@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.tibas.py
+*.log
 
 # C extensions
 *.so
