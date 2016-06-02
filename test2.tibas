@@ -1,2 +1,8 @@
 PRINT "Hello,"
 PRINT "World!"
+
+IF (a = None) THEN
+	PRINT "if"
+ELSE
+	PRINT "else"
+END IF
