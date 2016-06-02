@@ -25,9 +25,7 @@ class CimFilePage(Notebook):
         self.saved = True;
         if self.filename is None:
             self.save_file_as()
-            logging.debug('No Name ' + self.filename)
         else:
-            logging.debug('Save ' + self.filename)
             f = open(self.filename, "w")
             f.write(str(self.text_tiborcim.get(1.0, END)))
             f.close() 
@@ -65,11 +63,18 @@ class CimFilePage(Notebook):
             showerror("Open Source File", "Failed to read file\n'%s'" % fname)
         return
 
-    def view_tiborcim(self):
+    def view_tiborcim(self, event=None):
         self.select(self.page_tiborcim)
 
-    def view_python(self):
+    def view_python(self, event=None):
         self.select(self.page_python)
+
+    def get_file(self):
+        import os
+        filebit = self.filename.split(os.sep)
+        if len(filebit) == 1:
+            filebit = self.filename.split(os.altsep)
+        return filebit[len(filebit) - 1];
 
     def close(self):
         if not self.saved:
@@ -98,6 +103,10 @@ class CimApp(Frame):
         self.fileMenu = Menu(self.master, tearoff=0)
         self.fileMenu.add_command(label="Open...", command=self.load_file,
                                   underline=1, accelerator="Ctrl+O")
+        self.fileMenu.add_command(label="Save", command=self.file_save,
+                                  underline=1, accelerator="Ctrl+S")
+        self.fileMenu.add_command(label="Save As...", command=self.file_save_as,
+                                  underline=1, accelerator="Ctrl+Alt+S")
         self.fileMenu.add_command(label="Close", command=self.close_file,
                                   underline=1, accelerator="Ctrl+W")
         self.fileMenu.add_separator()
@@ -122,15 +131,27 @@ class CimApp(Frame):
         menubar.add_cascade(label="View", menu=self.menu_view, underline=1)
 
         self.bind_all("<Control-o>", self.load_file)
+        self.bind_all("<Control-s>", self.file_save)
+        self.bind_all("<Control-Alt-s>", self.file_save_as)
         self.bind_all("<Control-t>", self.convert_file)
         self.bind_all("<Control-b>", self.flash_file)
         self.bind_all("<Control-w>", self.close_file)
         self.master.protocol("WM_DELETE_WINDOW", self.file_quit)
 
         self.file_tabs = Notebook(self)
+        self.file_tabs.bind_all("<<NotebookTabChanged>>", self.file_changed)
         self.file_tabs.pack(expand=1, fill="both")
 
         self.add_file()
+
+    def file_changed(self, event):
+        title = str(event.widget.tab(event.widget.index("current"),"text")).upper().strip()
+        if title != "PYTHON" or title != "TIBORCIM":
+            if self.current_file().filename is not None:
+                self.master.title(self.current_file().get_file() + " - Tiborcim")
+            else:
+                self.master.title("Tiborcim")
+
     def add_file(self, file=None):
         filepage = CimFilePage(self.file_tabs)
         if file is None:
@@ -142,10 +163,10 @@ class CimApp(Frame):
             filepage.load_file(file)
         self.files.append(filepage)
 
-    def view_tiborcim(self):
+    def view_tiborcim(self, event=None):
         self.current_file().view_tiborcim()
 
-    def view_python(self):
+    def view_python(self, event=None):
         self.current_file().view_python()
 
     def load_file(self, event=None):
@@ -153,11 +174,16 @@ class CimApp(Frame):
         if fname:
             self.add_file(fname)
 
+    def file_save(self, event=None):
+        self.current_file().save_file()
+
+    def file_save_as(self, event=None):
+        self.current_file().save_file_as()
+
     def convert_file(self, event=None):
         self.current_file().convert_file()
 
-    def current_file(self):
-        logging.debug(int(self.file_tabs.index(self.file_tabs.select())))
+    def current_file(self, event=None):
         return self.files[int(self.file_tabs.index(self.file_tabs.select()))]
 
     def flash_file(self, event=None):
@@ -178,7 +204,7 @@ class CimApp(Frame):
             self.files.remove(file)
         
 
-    def file_quit(self):
+    def file_quit(self, event=None):
         for ndx, member in enumerate(self.files):
             logging.debug(self.files[ndx].saved)
             self.files[ndx].close()
