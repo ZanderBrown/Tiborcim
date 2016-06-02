@@ -4,13 +4,63 @@ from tkinter.messagebox import showerror, showinfo
 from tkinter import Menu, DISABLED, NORMAL, END
 from tkinter.scrolledtext import ScrolledText
 
+class CimFilePage(Notebook):
+    def __init__(self, parent):
+        Notebook.__init__(self, parent)
+        self.page_tiborcim = Frame(self)
+        self.page_python = Frame(self)
+        self.add(self.page_tiborcim, text='Tiborcim')
+        self.add(self.page_python, text='Python')
+        self.text_tiborcim = ScrolledText(self.page_tiborcim)
+        self.text_tiborcim.pack(expand=1, fill="both")
+        self.text_python = ScrolledText(self.page_python, state=DISABLED)
+        self.text_python.pack(expand=1, fill="both")
+
+    def save_file(self):
+        print('Save ' + self.filename)
+
+    def convert_file(self):
+        from tibc import compiler as tibc
+        # Should warn if unsaved...
+        self.save_file()
+        tibc(self.filename)
+        try:
+            f = open(self.filename + '.py')
+            self.text_python.config(state=NORMAL)
+            self.text_python.delete(1.0, END)
+            self.text_python.insert(END, f.read())
+            self.text_python.config(state=DISABLED)
+        except:
+            print("That's Odd")
+
+    def save_file_as(self, name):
+        self.filename = name
+        save_file()
+        
+    def load_file(self, name):
+        self.filename = name
+        print('Load ' + name)
+        try:
+            f = open(name)
+            self.text_tiborcim.delete(1.0, END)
+            self.text_tiborcim.insert(END, f.read())
+        except:
+            showerror("Open Source File", "Failed to read file\n'%s'" % fname)
+        return
+
+    def view_tiborcim(self):
+        self.select(self.page_tiborcim)
+
+    def view_python(self):
+        self.select(self.page_python)
+        
 class CimApp(Frame):
     def __init__(self):
         Frame.__init__(self)
         self.file = None;
         self.master.title("Tiborcim")
         self.master.iconbitmap('icon.ico')
-        
+        self.files = []
         self.pack(expand=1, fill="both")
 
         menubar = Menu(self.master)
@@ -42,65 +92,47 @@ class CimApp(Frame):
         self.bind_all("<Control-t>", self.convert_file_keyb)
         self.bind_all("<Control-b>", self.flash_file_keyb)
 
-        self.nb = Notebook(self)
+        self.file_tabs = Notebook(self)
+        self.nb = CimFilePage(self.file_tabs)
+        self.files.append(self.nb)
 
-        self.page1 = Frame(self.nb)
-        self.nonpython = ScrolledText(self.page1, state=DISABLED)
-        self.nonpython.pack(expand=1, fill="both")
-        
-        self.page2 = Frame(self.nb)
-        self.python = ScrolledText(self.page2, state=DISABLED)
-        self.python.pack(expand=1, fill="both")
+        self.file_tabs.add(self.nb, text='Unsaved Script')
+        self.file_tabs.pack(expand=1, fill="both")
 
-        self.nb.add(self.page1, text='Tiborcim')
-        self.nb.add(self.page2, text='Python')
-
-        self.nb.pack(expand=1, fill="both")
+    def add_file(self, file):
+        filepage = CimFilePage(self.file_tabs)
+        self.file_tabs.add(filepage, text=file)
+        filepage.load_file(file)
+        self.files.append(filepage)
 
     def view_tiborcim(self):
-        self.nb.select(self.page1)
+        self.current_file().view_tiborcim()
 
     def view_python(self):
-        self.nb.select(self.page2)
+        self.current_file().view_python()
 
     def load_file(self):
-        fname = askopenfilename(filetypes=(("Tiborcim", "*.tibas"),
-                                           ("All files", "*.*") ))
+        fname = askopenfilename(filetypes=(("Tiborcim", "*.tibas"),("All files", "*.*") ))
         if fname:
-            try:
-                self.file = fname
-                self.master.title(fname)
-                f = open(self.file)
-                self.nonpython.config(state=NORMAL)
-                self.nonpython.delete(1.0, END)
-                self.nonpython.insert(END, f.read())
-                self.nonpython.config(state=DISABLED)
-            except:
-                showerror("Open Source File", "Failed to read file\n'%s'" % fname)
-            return
+            self.add_file(fname)
 
     def load_file_keyb(self, event):
         self.load_file()
 
     def convert_file(self):
-        from tibc import compiler as tibc
-        tibc(self.file)
-        try:
-            f = open(self.file + '.py')
-            self.python.config(state=NORMAL)
-            self.python.delete(1.0, END)
-            self.python.insert(END, f.read())
-            self.python.config(state=DISABLED)
-        except:
-            print("That's Odd")
+        self.current_file().convert_file()
 
     def convert_file_keyb(self, event):
         self.convert_file()
 
+    def current_file(self):
+        return self.files[int(self.file_tabs.index(self.file_tabs.select()))]
+
     def flash_file(self):
         from tibc import flash
         from tibc import TibcStatus as status
-        result = flash(self.file + '.py')
+        self.current_file().convert_file()
+        result = flash(self.current_file().filename + '.py')
         if result is status.SUCCESS:
             showinfo(title='Success', message='File Flashed', parent=self.master)
         else:
