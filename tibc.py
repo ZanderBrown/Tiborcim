@@ -32,6 +32,14 @@ class compiler:
                     self.indentLevel += 1
                     continue
 
+                m = re.search('(?:^ELSEIF)', line.strip())
+                if m is not None:
+                    line = re.sub('=', ' == ', line)
+                    self.indentLevel -= 1
+                    self.print_output('elif (' + str.strip(line[6:-5]) + '):')
+                    self.indentLevel += 1
+                    continue
+
                 m = re.search('(?:^\')', line.strip())
                 if m is not None:
                     self.print_output('#' + line)

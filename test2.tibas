@@ -3,6 +3,8 @@ PRINT "World!"
 
 IF (a = None) THEN
 	PRINT "if"
+ELSEIF (b = None) THEN
+	PRINT "elseif"
 ELSE
 	PRINT "else"
 END IF
