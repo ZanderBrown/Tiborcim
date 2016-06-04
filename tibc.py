@@ -26,11 +26,6 @@ class compiler:
             if self.python_block is False:
                 # SCREEN
                 line = re.sub("SCREEN(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "display.get_pixel", line.strip())
-                #while m is not None:
-                #    print (m)
-                #    #print (m[0].span)
-                #    self.print_output('display.get_pixel(' + line.strip()[6:].strip() + ')')
-                #    m = re.search("SCREEN(?=([^\"]*\"[^\"]*\")*[^\"]*$)", line.strip())
 
                 # PRINT
                 m = re.search('(?:^PRINT)', line.strip())
