@@ -8,3 +8,7 @@ ELSEIF (b = None) THEN
 ELSE
 	PRINT "else"
 END IF
+
+PRINT "The End"
+SCREEN (1, 1)
+PRINT SCREEN (1,1) + SCREEN(1, 1)
