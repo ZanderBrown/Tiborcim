@@ -27,6 +27,9 @@ class compiler:
                 # SCREEN
                 line = re.sub("SCREEN(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "display.get_pixel", line.strip())
 
+                # SCREEN
+                line = re.sub("STR$(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "str", line.strip())
+
                 # PRINT
                 m = re.search('(?:^PRINT)', line.strip())
                 if m is not None:
