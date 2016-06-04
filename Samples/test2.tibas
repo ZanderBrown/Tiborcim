@@ -1,6 +1,11 @@
 PRINT "Hello,"
 PRINT "World!"
 
+PYTHON
+a = None
+b = a
+END PYTHON
+
 IF (a = None) THEN
 	PRINT "if"
 ELSEIF (b = None) THEN
@@ -9,6 +14,5 @@ ELSE
 	PRINT "else"
 END IF
 
-PRINT "The End"
-SCREEN (1, 1)
-PRINT SCREEN (1,1) + SCREEN(1, 1)
+PSET 1, 1, 9
+PSET 2, 2, 2

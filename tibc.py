@@ -30,7 +30,13 @@ class compiler:
                 # PRINT
                 m = re.search('(?:^PRINT)', line.strip())
                 if m is not None:
-                    self.print_output('display.scroll(' + line.strip()[5:].strip() + ')')
+                    self.print_output('display.scroll(str(' + line.strip()[5:].strip() + '))')
+                    continue
+
+                # PSET
+                m = re.search('(?:^PSET)', line.strip())
+                if m is not None:
+                    self.print_output('display.set_pixel(' + line.strip()[4:].strip() + ')')
                     continue
 
                 # IF
