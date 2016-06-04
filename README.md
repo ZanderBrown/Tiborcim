@@ -39,15 +39,32 @@ Equivalent to display.scroll()
 ```
 PRINT "Somestring"
 ```
-### IF .. END IF
+
+#### Flow
+##### IF .. ELSEIF .. ELSE .. END IF
 Simple logic
-**Note:** doesnt support ELSE
 ```
 IF (1 < 10) THEN
 PRINT "1 is less than 10"
+ELSEIF (2 < 5) THEN
+PRINT "1 is not less then 10 but 2 is less than 5"
+ELSE
+PRINT "You need to work on your Maths"
 END IF
 ```
-###PYTHON .. END PYTHON
+#### Pixels
+##### SCREEN
+Returns the brightness of the pixel at x, y
+```
+PRINT SCREEN (x, y)
+```
+##### PSET
+Sets the brightness of pixel x, y to z
+```
+PSET x, y, z
+```
+
+#### PYTHON .. END PYTHON
 allows the use of pure python code in a Tiborcim script
 e.g.:
 ```
@@ -59,13 +76,12 @@ END PYTHON
 PRINT a
 ```
 
-### Planned
-| Function        | Does                                                                     |
-| --------------- | ------------------------------                                           |
-| PUT x,y,b       | Apply the brightness b on x, y                                           |
-| SCREEN (x, y)   | Get the brightness of x,y                                                |
-| ELSE            | IF ELSE ENDIF                                                            |
-| Variables       | Currently vaiables can only be created and modified within PYTHON blocks |
+
+#### Planned
+| Function        | Does                                                                                            |
+| --------------- | ------------------------------                                                                  |
+| Variables       | Currently vaiables can only be created and modified within PYTHON blocks (can be used anywhere) |
+| DO .. WHILE     | Loop code while condition is true                                                               |
 
 ## Whats it written in?
 The 'compiler' and sample DE (i would say IDE but it isn't) are written in Python3. I am to be as Pythonic a possible.
