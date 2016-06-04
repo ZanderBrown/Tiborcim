@@ -5,6 +5,10 @@ class TibcStatus(Enum):
     NOT_FOUND = 2
     SUCCESS = 3
 
+class TiborcimSyntaxError(Exception):
+    def __init__(self, text):
+        super(text)
+
 class compiler:
     def __init__(self, file, output = None):
         import re
@@ -20,11 +24,21 @@ class compiler:
         self.print_output('from microbit import *')
         for line in self.content:
             if self.python_block is False:
+                # SCREEN
+                line = re.sub("SCREEN(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "display.get_pixel", line.strip())
+                #while m is not None:
+                #    print (m)
+                #    #print (m[0].span)
+                #    self.print_output('display.get_pixel(' + line.strip()[6:].strip() + ')')
+                #    m = re.search("SCREEN(?=([^\"]*\"[^\"]*\")*[^\"]*$)", line.strip())
+
+                # PRINT
                 m = re.search('(?:^PRINT)', line.strip())
                 if m is not None:
                     self.print_output('display.scroll(' + line.strip()[5:].strip() + ')')
                     continue
 
+                # IF
                 m = re.search('(?:^IF)', line.strip())
                 if m is not None:
                     line = re.sub('=', ' == ', line)
@@ -32,6 +46,7 @@ class compiler:
                     self.indentLevel += 1
                     continue
 
+                # ELSEIF
                 m = re.search('(?:^ELSEIF)', line.strip())
                 if m is not None:
                     line = re.sub('=', ' == ', line)
@@ -40,17 +55,20 @@ class compiler:
                     self.indentLevel += 1
                     continue
 
+                # Comment
                 m = re.search('(?:^\')', line.strip())
                 if m is not None:
                     self.print_output('#' + line)
                     continue
 
+                # END IF
                 m = re.search('(?:^END IF)', line.strip())
                 if m is not None:
                     self.indentLevel -= 1
                     self.print_output("")
                     continue
 
+                # ELSE
                 m = re.search('(?:^ELSE)', line.strip())
                 if m is not None:
                     self.indentLevel -= 1
@@ -58,13 +76,14 @@ class compiler:
                     self.indentLevel += 1
                     continue
 
+                # PYTHON
                 m = re.search('(?:^PYTHON)', line.strip())
                 if m is not None:
                     self.python_block = True
                     continue
 
             else:
-
+                # END PYTHON
                 m = re.search('(?:^END PYTHON)', line.strip())
                 if m is not None:
                     self.python_block = False

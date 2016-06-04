@@ -7,7 +7,7 @@ The plan is to a create a source to source (or trans-)complier to take Tiborcim 
 The 'compiler'. Why the name? cc, vbc, valax, tsc... sort of set a trend and tiborcimc was a bit long.
 
 ### Usage
-tibc.py [-h] [-p] [source] [target]
+`tibc.py [-h] [-p] [source] [target]`
 
 where -h print's help, -p for flashing a file that is already python, source being the filename and source being the location of your microbit (only needed if it's not found)
 
@@ -60,12 +60,12 @@ PRINT a
 ```
 
 ### Planned
-| Function  | Does                                                                     |
-| --------- | ------------------------------                                           |
-| PUT x,y,b | Apply the brightness b on x, y                                           |
-| GET x,y   | Get the brightness of x,y                                                |
-| ELSE      | IF ELSE ENDIF                                                            |
-| Variables | Currently vaiables can only be created and modified within PYTHON blocks |
+| Function        | Does                                                                     |
+| --------------- | ------------------------------                                           |
+| PUT x,y,b       | Apply the brightness b on x, y                                           |
+| SCREEN (x, y)   | Get the brightness of x,y                                                |
+| ELSE            | IF ELSE ENDIF                                                            |
+| Variables       | Currently vaiables can only be created and modified within PYTHON blocks |
 
 ## Whats it written in?
 The 'compiler' and sample DE (i would say IDE but it isn't) are written in Python3. I am to be as Pythonic a possible.
