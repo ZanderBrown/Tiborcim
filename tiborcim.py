@@ -22,10 +22,10 @@ class CimFilePage(Notebook):
         self.saved = True;
 
     def save_file(self):
-        self.saved = True;
         if self.filename is None:
             self.save_file_as()
         else:
+            self.saved = True;
             f = open(self.filename, "w")
             f.write(str(self.text_tiborcim.get(1.0, END)))
             f.close() 
@@ -82,7 +82,7 @@ class CimFilePage(Notebook):
                 logging.debug("Close Anyway")
                 return True
             else:
-                logging.debug("Cancel")
+                self.save_file()
                 return False
         else:
             return True
@@ -199,7 +199,7 @@ class CimApp(Frame):
     def close_file(self, event=None):
         logging.debug("Close File")
         file = self.current_file()
-        if file.close():            
+        if file.close():
             self.file_tabs.forget(file)
             self.files.remove(file)
         
@@ -207,7 +207,8 @@ class CimApp(Frame):
     def file_quit(self, event=None):
         for ndx, member in enumerate(self.files):
             logging.debug(self.files[ndx].saved)
-            self.files[ndx].close()
+            if not self.files[ndx].close():
+                return
 
         self.quit()
 
