@@ -46,6 +46,7 @@ class compiler:
                 m = re.search('(?:^IF)', line.strip())
                 if m is not None:
                     line = re.sub('=', ' == ', line)
+                    self.print_output()
                     self.print_output('if (' + str.strip(line[2:-5]) + '):')
                     self.indentLevel += 1
                     continue
@@ -55,6 +56,7 @@ class compiler:
                 if m is not None:
                     line = re.sub('=', ' == ', line)
                     self.indentLevel -= 1
+                    self.print_output()
                     self.print_output('elif (' + str.strip(line[6:-5]) + '):')
                     self.indentLevel += 1
                     continue
@@ -76,6 +78,7 @@ class compiler:
                 m = re.search('(?:^ELSE)', line.strip())
                 if m is not None:
                     self.indentLevel -= 1
+                    self.print_output()
                     self.print_output("else:")
                     self.indentLevel += 1
                     continue
@@ -84,6 +87,7 @@ class compiler:
                 m = re.search('(?:^WHILE)', line.strip())
                 if m is not None:
                     line = re.sub('(?<!\<)(?<!\>)(?<!\!)=', ' == ', line)
+                    self.print_output()
                     self.print_output('while (' + str.strip(line[5:]) + '):')
                     self.indentLevel += 1
                     continue
