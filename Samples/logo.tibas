@@ -1,0 +1,30 @@
+' Main (brightest) image
+' Top Row
+PSET 0, 0, 9
+PSET 1, 0, 9
+PSET 2, 0, 9
+PSET 3, 0, 9
+PSET 4, 0, 9
+
+' | of t
+PSET 2, 1, 9
+PSET 2, 2, 9
+PSET 2, 3, 9
+PSET 2, 4, 9
+
+' Shadow 1
+' -
+PSET 1, 1, 6
+PSET 3, 1, 6
+PSET 4, 1, 6
+
+' |
+PSET 3, 2, 6
+PSET 3, 3, 6
+PSET 3, 4, 6
+
+' Shadow 2
+' |
+PSET 4, 2, 1
+PSET 4, 3, 1
+PSET 4, 4, 1
