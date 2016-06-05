@@ -2,18 +2,21 @@ repeat = 0
 direction = 0
 WHILE repeat < 300
 	a = 0
-	WHILE a < 4
+	WHILE a < 5
 		b = 0
-		WHILE b < 4
+		WHILE b < 5
+			current = SCREEN (a , b)
 			IF direction = 0 THEN
-				PSET a, b, (SCREEN (a , b) + 1)
+				new = (current + 1)
 			ELSE
-				PSET a, b, (SCREEN (a , b) - 1)
+				new = (current - 1)
 			END IF
-			IF SCREEN (a , b) > 7  THEN
+			IF new > 9  THEN
 				direction = 1
-			ELSEIF SCREEN (a , b) < 2  THEN
+			ELSEIF new < 0  THEN
 				direction = 0
+			ELSE
+				PSET a, b, new
 			END IF
 			b = b + 1
 		WEND
