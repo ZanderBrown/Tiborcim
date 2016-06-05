@@ -1,0 +1,23 @@
+repeat = 0
+direction = 0
+WHILE repeat < 300
+	a = 0
+	WHILE a < 4
+		b = 0
+		WHILE b < 4
+			IF direction = 0 THEN
+				PSET a, b, (SCREEN (a , b) + 1)
+			ELSE
+				PSET a, b, (SCREEN (a , b) - 1)
+			END IF
+			IF SCREEN (a , b) > 7  THEN
+				direction = 1
+			ELSEIF SCREEN (a , b) < 2  THEN
+				direction = 0
+			END IF
+			b = b + 1
+		WEND
+		a = a + 1
+	WEND
+	repeat = repeat + 1
+WEND

@@ -80,12 +80,32 @@ class compiler:
                     self.indentLevel += 1
                     continue
 
+                # WHILE
+                m = re.search('(?:^WHILE)', line.strip())
+                if m is not None:
+                    line = re.sub('(?<!\<)(?<!\>)(?<!\!)=', ' == ', line)
+                    self.print_output('while (' + str.strip(line[5:]) + '):')
+                    self.indentLevel += 1
+                    continue
+
+                # WEND (End While)
+                m = re.search('(?:^WEND)', line.strip())
+                if m is not None:
+                    self.indentLevel -= 1
+                    self.print_output("")
+                    continue
+
                 # PYTHON
                 m = re.search('(?:^PYTHON)', line.strip())
                 if m is not None:
                     self.python_block = True
                     continue
 
+                # Variable Assignment
+                m = re.search('\=(?=([^\"]*\"[^\"]*\")*[^\"]*$)', line.strip())
+                if m is not None:
+                    self.print_output(line.strip())
+                    continue
             else:
                 # END PYTHON
                 m = re.search('(?:^END PYTHON)', line.strip())
