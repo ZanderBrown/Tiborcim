@@ -14,13 +14,14 @@ class TiborcimSyntaxError(Exception):
 class compiler:
     def __init__(self, file, output = None):
         import re
-        self.inputFile = open(file, "r")
+        self.file_input = open(file, "r")
         if output is None:
             output = file + '.py'
-        self.outputFile = open(output, "w")
-        self.content = self.inputFile.readlines()
+        self.file_output = open(output, "w")
+        self.content = self.file_input.readlines()
 
-        self.indentLevel = 0;
+        self.indent_level = 0
+        slef.tmp_vars = 0
         self.python_block = False
 
         self.print_output('from microbit import *')
@@ -37,13 +38,13 @@ class compiler:
         for line in self.content:
             if self.python_block is False:
                 # INKEY
-                line = re.sub("INKEY$(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "read_keys", line.strip())
+                line = re.sub("INKEY\$(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "read_keys()", line.strip())
 
                 # SCREEN
                 line = re.sub("SCREEN(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "display.get_pixel", line.strip())
 
                 # STR$
-                line = re.sub("STR$(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "str", line.strip())
+                line = re.sub("STR\$(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "str", line.strip())
 
                 # PRINT
                 m = re.search('(?:^PRINT)', line.strip())
@@ -63,17 +64,17 @@ class compiler:
                     line = re.sub('=', ' == ', line)
                     self.print_output()
                     self.print_output('if (' + str.strip(line[2:-5]) + '):')
-                    self.indentLevel += 1
+                    self.indent_level += 1
                     continue
 
                 # ELSEIF
                 m = re.search('(?:^ELSEIF)', line.strip())
                 if m is not None:
                     line = re.sub('=', ' == ', line)
-                    self.indentLevel -= 1
+                    self.indent_level -= 1
                     self.print_output()
                     self.print_output('elif (' + str.strip(line[6:-5]) + '):')
-                    self.indentLevel += 1
+                    self.indent_level += 1
                     continue
 
                 # Comment
@@ -85,17 +86,17 @@ class compiler:
                 # END IF
                 m = re.search('(?:^END IF)', line.strip())
                 if m is not None:
-                    self.indentLevel -= 1
+                    self.indent_level -= 1
                     self.print_output("")
                     continue
 
                 # ELSE
                 m = re.search('(?:^ELSE)', line.strip())
                 if m is not None:
-                    self.indentLevel -= 1
+                    self.indent_level -= 1
                     self.print_output()
                     self.print_output("else:")
-                    self.indentLevel += 1
+                    self.indent_level += 1
                     continue
 
                 # WHILE
@@ -104,13 +105,13 @@ class compiler:
                     line = re.sub('(?<!\<)(?<!\>)(?<!\!)=', ' == ', line)
                     self.print_output()
                     self.print_output('while (' + str.strip(line[5:]) + '):')
-                    self.indentLevel += 1
+                    self.indent_level += 1
                     continue
 
                 # WEND (End While)
                 m = re.search('(?:^WEND)', line.strip())
                 if m is not None:
-                    self.indentLevel -= 1
+                    self.indent_level -= 1
                     self.print_output("")
                     continue
 
@@ -134,14 +135,14 @@ class compiler:
                 else:
                     self.print_output(line)
         #(?:^PRINT)\W(["'])(?:(?=(\\?))\2.)*?\1
-        self.inputFile.close()
-        self.outputFile.close()
+        self.file_input.close()
+        self.file_output.close()
     def print_output(self, text = ''):
         indents = ""
-        for i in range(0, self.indentLevel):
+        for i in range(0, self.indent_level):
             indents += "\t"
         print(indents + text)
-        self.outputFile.write(indents + text + "\n")
+        self.file_output.write(indents + text + "\n")
         
 
 def flash(file, path = None):
