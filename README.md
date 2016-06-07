@@ -52,6 +52,14 @@ ELSE
 PRINT "You need to work on your Maths"
 END IF
 ```
+##### WHILE .. WEND
+Repeat code while condition is true
+```
+x = 0
+WHILE x < 10
+	x = x + 1
+WEND
+```
 #### Pixels
 ##### SCREEN
 Returns the brightness of the pixel at x, y
@@ -63,7 +71,32 @@ Sets the brightness of pixel x, y to z
 ```
 PSET x, y, z
 ```
-
+#### Buttons
+##### INKEY$
+returns the current held button in the for of A, B or C with A & B representing their corresponding buttons while C is A+B simultaneously
+if nothing is pressed '' is returned
+```
+WHILE 1
+	x = INKEY$
+	IF x = 'A' THEN
+		PRINT 'A'
+	ELSEIF x = 'B' THEN
+		PRINT 'B'
+	ELSEIF x = 'C' THEN
+		PRINT 'A+B'
+	END IF
+END WHILE
+```
+#### Variables
+Most standard Python operations are available although ++ += -- -= are discouraged as they are not available in BASIC
+Comparison operations are a little more complecated. Currently supported are = < >. >= => <> NOT() are planned
+##### STR$
+Casts a value to string
+```
+a = 10
+b = STR$(a)
+' b is '10' not 10
+```
 #### PYTHON .. END PYTHON
 allows the use of pure python code in a Tiborcim script
 e.g.:
@@ -80,8 +113,7 @@ PRINT a
 #### Planned
 | Function        | Does                                                                                            |
 | --------------- | ------------------------------                                                                  |
-| Variables       | Currently vaiables can only be created and modified within PYTHON blocks (can be used anywhere) |
-| DO .. WHILE     | Loop code while condition is true                                                               |
+| SUB END SUB     | Declare a meathod (no return value)                                                             |
 
 ## Whats it written in?
 The 'compiler' and sample DE (i would say IDE but it isn't) are written in Python3. I am to be as Pythonic a possible.
