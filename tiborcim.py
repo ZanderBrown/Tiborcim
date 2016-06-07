@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 from tkinter.ttk import Frame, Button, Notebook
 from tkinter.filedialog import askopenfilename, asksaveasfile
 from tkinter.messagebox import showerror, showinfo, askokcancel
