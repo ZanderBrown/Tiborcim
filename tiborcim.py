@@ -159,8 +159,8 @@ class CimApp(Frame):
             filepage.saved = False
             filepage.filename = None
         else:
-            self.file_tabs.add(filepage, text=file)
             filepage.load_file(file)
+            self.file_tabs.add(filepage, text=filepage.get_file())
         self.files.append(filepage)
 
     def view_tiborcim(self, event=None):

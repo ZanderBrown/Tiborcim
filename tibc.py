@@ -22,12 +22,25 @@ class compiler:
         self.python_block = False
 
         self.print_output('from microbit import *')
+        self.print_output('def read_keys():')
+        self.print_output("\t" +  'if button_a.is_pressed() and button_b.is_pressed():')
+        self.print_output("\t\t" +  'return \'C\'')
+        self.print_output("\t" +  'elif button_a.is_pressed():')
+        self.print_output("\t\t" +  'return \'A\'')
+        self.print_output("\t" +  'elif button_b.is_pressed():')
+        self.print_output("\t\t" +  'return \'B\'')
+        self.print_output("\t" +  'else:')
+        self.print_output("\t\t" +  'return \'\'')
+        self.print_output()
         for line in self.content:
             if self.python_block is False:
+                # INKEY
+                line = re.sub("INKEY$(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "read_keys", line.strip())
+
                 # SCREEN
                 line = re.sub("SCREEN(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "display.get_pixel", line.strip())
 
-                # SCREEN
+                # STR$
                 line = re.sub("STR$(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "str", line.strip())
 
                 # PRINT
