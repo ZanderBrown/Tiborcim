@@ -1,0 +1,5 @@
+WHILE 1
+PRINT INKEY$
+WEND
+
+

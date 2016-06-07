@@ -24,4 +24,8 @@ WHILE repeat < 300
 	WEND
 	repeat = repeat + 1
 WEND
+PYTHON
+sleep(1000)
+END PYTHON
+PRINT INKEY ()
 
