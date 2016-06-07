@@ -21,7 +21,7 @@ class compiler:
         self.content = self.file_input.readlines()
 
         self.indent_level = 0
-        slef.tmp_vars = 0
+        self.tmp_vars = 0
         self.python_block = False
 
         self.print_output('from microbit import *')
