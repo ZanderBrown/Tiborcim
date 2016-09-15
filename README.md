@@ -4,7 +4,7 @@ BASIC for the Micro:Bit
 The plan is to a create a source to source (or trans-)complier to take Tiborcim a custom language with syntax as close to BBC BASIC as possible and generate MicroPython code for the BBC Micro:Bit
 
 ## Tibc.py
-The 'compiler'. Why the name? cc, vbc, valax, tsc... sort of set a trend and tiborcimc was a bit long.
+The 'compiler'. Why the name? cc, vbc, valac, tsc... sort of set a trend and tiborcimc was a bit long.
 
 ### Usage
 `tibc.py [-h] [-p] [source] [target]`
