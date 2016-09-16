@@ -1,0 +1,3 @@
+PRINT INT(RND * 6 + 1)
+
+
