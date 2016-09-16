@@ -1,1 +1,8 @@
-PRINT INT(RND * 6 + 1)
+WHILE 1
+	IF SHAKEN THEN
+		PRINT INT(RND * 6 + 1)
+	ENDIF
+
+
+
+
