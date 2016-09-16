@@ -1,0 +1,14 @@
+SUB Test
+	PRINT "Hi"
+END SUB
+
+SUB Other()
+	PRINT "Again"
+END SUB
+
+PYTHON
+Test()
+Other()
+END PYTHON
+
+
