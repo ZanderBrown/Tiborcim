@@ -40,12 +40,13 @@ class compiler:
             "\t\t" +  'return \'\'' + "\n"
         ]
         self.code_input_used = False;
-        self.code = []
+        self.code = ["\n"]
         for line in self.content:
             if self.python_block is False:
                 # INKEY
+                if re.search("INKEY\$(?=([^\"]*\"[^\"]*\")*[^\"]*$)", line.strip()) is not None:
+                    self.code_input_used = True;
                 line = re.sub("INKEY\$(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "read_keys()", line.strip())
-                self.code_input_used = True;
 
                 # SCREEN
                 line = re.sub("SCREEN(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "display.get_pixel", line.strip())
@@ -53,9 +54,13 @@ class compiler:
                 # STR$
                 line = re.sub("STR\$(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "str", line.strip())
 
+                # RND
+                line = re.sub("RND(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "random.random()", line.strip())
+
                 # PRINT
                 m = re.search('(?:^PRINT)', line.strip())
                 if m is not None:
+                    # Wrap the argument in str() because display.scroll only accepts strings
                     self.print_output('display.scroll(str(' + line.strip()[5:].strip() + '))')
                     continue
 
@@ -155,7 +160,6 @@ class compiler:
             print(line)
             self.file_output.write(line)
 
-        print(self.code_input_used)
         if self.code_input_used:
             for line in self.code_input:
                 print(line)
