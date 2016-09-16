@@ -54,6 +54,9 @@ class compiler:
                 # STR$
                 line = re.sub("STR\$(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "str", line.strip())
 
+                # INT
+                line = re.sub("(?<!PR)INT(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "int", line.strip())
+
                 # RND
                 line = re.sub("RND(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "random.random()", line.strip())
 
@@ -164,7 +167,7 @@ class compiler:
             for line in self.code_input:
                 print(line)
                 self.file_output.write(line)
-                
+
         for line in self.code:
             print(line)
             self.file_output.write(line)
