@@ -9,7 +9,7 @@ The 'compiler'. Why the name? cc, vbc, valac, tsc... sort of set a trend and tib
 ### Usage
 `tibc.py [-h] [-p] [source] [target]`
 
-where -h print's help, -p for flashing a file that is already python, source being the filename and source being the location of your microbit (only needed if it's not found)
+where -h prints help, -p for flashing a file that is already python, source being the file name and source being the location of your Micro:Bit (only needed if it's not found)
 
 ## Tiborcim.py
 A simple editor
@@ -17,7 +17,7 @@ A simple editor
 ### Usage
 The main window consists of a menu bar and two tabs
 the first tabs is for Tiborcim source where as the second shows the generated MicroPython source
-The menubar provide standard controls for managing file and options to flash the code
+The menu-bar provide standard controls for managing file and options to flash the code
 
 ## Language
 ### Hello World
@@ -31,13 +31,13 @@ from microbit import *
 
 display.scroll("Hello, World!")
 ```
-no prizes for quessing what the microbit does...
+no prizes for guessing what the Micro:Bit does...
 
 ### Current Tiborcim statements
 #### PRINT
 Equivalent to display.scroll()
 ```
-PRINT "Somestring"
+PRINT "Some string"
 ```
 
 #### Flow
@@ -89,7 +89,7 @@ END WHILE
 ```
 #### Variables
 Most standard Python operations are available although ++ += -- -= are discouraged as they are not available in BASIC
-Comparison operations are a little more complecated. Currently supported are = < >. >= => <> NOT() are planned
+Comparison operations are a little more complicated. Currently supported are = < >. >= => <> NOT() are planned
 ##### STR$
 Casts a value to string
 ```
@@ -113,10 +113,10 @@ PRINT a
 #### Planned
 | Function        | Does                                                                                            |
 | --------------- | ------------------------------                                                                  |
-| SUB END SUB     | Declare a meathod (no return value)                                                             |
+| SUB END SUB     | Declare a method (no return value)                                                             |
 
-## Whats it written in?
-The 'compiler' and sample DE (i would say IDE but it isn't) are written in Python3. I am to be as Pythonic a possible.
+## What is it written in?
+The 'compiler' and sample DE (I would say IDE but it isn't) are written in Python3. I am to be as Pythonic a possible.
 
 ### Dependencies
 The goal is to have a few dependencies as possible outside the package itself hence our current editor uses Tkinter although a GTK3 (PyGObject) environment is planned as an optional extra.
@@ -124,8 +124,8 @@ The goal is to have a few dependencies as possible outside the package itself he
 ## Why the name?
 Write it backwards.
 
-### Seriousley
-Imaginative i know. Other name's were considred but just didn't feel right
+### Seriously
+Imaginative I know. Other name's were considered but just didn't feel right
 
 ### How do you say that?!
-Tib - or - kim is how i say it aloud.
+Tib - or - kim is how I say it aloud.
