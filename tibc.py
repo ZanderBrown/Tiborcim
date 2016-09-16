@@ -39,13 +39,14 @@ class compiler:
             "\t" +  'else:' + "\n",
             "\t\t" +  'return \'\'' + "\n"
         ]
-        self.code_input_used = False;
+        self.code_input_used = False
+        self.random_imported = False
         self.code = ["\n"]
         for line in self.content:
             if self.python_block is False:
                 # INKEY
                 if re.search("INKEY\$(?=([^\"]*\"[^\"]*\")*[^\"]*$)", line.strip()) is not None:
-                    self.code_input_used = True;
+                    self.code_input_used = True
                 line = re.sub("INKEY\$(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "read_keys()", line.strip())
 
                 # SCREEN
@@ -58,7 +59,14 @@ class compiler:
                 line = re.sub("(?<!PR)INT(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "int", line.strip())
 
                 # RND
+                if re.search("RND(?=([^\"]*\"[^\"]*\")*[^\"]*$)", line.strip()) is not None:
+                    if not self.random_imported:
+                        self.code_header.append('import random' + "\n")
+                        self.random_imported = True
                 line = re.sub("RND(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "random.random()", line.strip())
+
+                # SCREEN
+                line = re.sub("SHAKEN(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "accelerometer.was_gesture(\"shake\")", line.strip())
 
                 # PRINT
                 m = re.search('(?:^PRINT)', line.strip())
