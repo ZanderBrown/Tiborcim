@@ -97,6 +97,21 @@ a = 10
 b = STR$(a)
 ' b is '10' not 10
 ```
+
+##### INT
+Casts a value to integer
+```
+a = 10.6789
+b = INT(a)
+' b is 10 not 10.6789
+```
+
+##### RND
+Returns a random number between 0 & 1
+```
+dice = INT(RND * 6 + 1)
+```
+
 #### PYTHON .. END PYTHON
 allows the use of pure python code in a Tiborcim script
 e.g.:
@@ -108,7 +123,6 @@ END PYTHON
 
 PRINT a
 ```
-
 
 #### Planned
 | Function        | Does                                                                                            |
