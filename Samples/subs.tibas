@@ -2,13 +2,9 @@ SUB Test
 	PRINT "Hi"
 END SUB
 
-SUB Other()
-	PRINT "Again"
+SUB Other(test)
+	PRINT test
 END SUB
 
-PYTHON
 Test()
-Other()
-END PYTHON
-
-
+Other("Again")
