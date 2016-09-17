@@ -1,0 +1,10 @@
+SUB Test
+	PRINT "Hi"
+END SUB
+
+SUB Other(test)
+	PRINT test
+END SUB
+
+Test()
+Other("Again")
