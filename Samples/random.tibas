@@ -1,8 +1,6 @@
 WHILE 1
 	IF SHAKEN THEN
-		PRINT INT(RND * 6 + 1)
+		num = INT(RND * 6 + 1)
+		SHOW STR$(num)
 	ENDIF
-
-
-
-
+WEND
