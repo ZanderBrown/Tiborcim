@@ -77,6 +77,26 @@ class compiler:
                     self.print_output('display.scroll(str(' + line.strip()[5:].strip() + '))')
                     continue
 
+                # SHOW
+                m = re.search('(?:^SHOW)', line.strip())
+                if m is not None:
+                    self.print_output('display.show(str(' + line.strip()[4:].strip() + '))')
+                    continue
+
+                # IMAGE
+                m = re.search('(?:^IMAGE)', line.strip())
+                if m is not None:
+                    # cast string (of form "12345:67890....") to Micro:Bit image
+                    self.print_output('display.show(Image(' + line.strip()[5:].strip() + '))')
+                    continue
+
+                # SLEEP
+                m = re.search('(?:^SLEEP)', line.strip())
+                if m is not None:
+                    # Multiply the argument by 1000 to convert to miliseconds
+                    self.print_output('sleep((' + line.strip()[5:].strip() + ')*1000)')
+                    continue
+
                 # SUB
                 m = re.search('(?:^SUB) (\w+)', line.strip())
                 if m is not None:
