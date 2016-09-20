@@ -62,6 +62,14 @@ class compiler:
                 # INT
                 line = re.sub("(?<!PR)INT(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "int", line.strip())
 
+                # RECEIVE$
+                m = re.search('(?:^RECEIVE\$(?=([^\"]*\"[^\"]*\")*[^\"]*$))', line.strip())
+                if m is not None:
+                    if not self.radio_imported:
+                        self.code_header.append('import radio' + "\n")
+                        self.radio_imported = True
+                line = re.sub("RECEIVE\$(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "radio.receive()", line.strip())
+
                 # RND
                 if re.search("RND(?=([^\"]*\"[^\"]*\")*[^\"]*$)", line.strip()) is not None:
                     if not self.random_imported:
@@ -82,7 +90,7 @@ class compiler:
                 # BROADCAST
                 m = re.search('(?:^BROADCAST)', line.strip())
                 if m is not None:
-                    if not self.random_imported:
+                    if not self.radio_imported:
                         self.code_header.append('import radio' + "\n")
                         self.radio_imported = True
                     self.print_output('radio.send(str(' + line.strip()[9:].strip() + '))')
@@ -91,6 +99,9 @@ class compiler:
                 # RADIO
                 m = re.search('(?:^RADIO)', line.strip())
                 if m is not None:
+                    if not self.radio_imported:
+                        self.code_header.append('import radio' + "\n")
+                        self.radio_imported = True
                     if line.strip()[6:].strip() == 'ON':
                         self.print_output('radio.on()')
                     else:
