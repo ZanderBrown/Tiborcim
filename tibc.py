@@ -88,6 +88,15 @@ class compiler:
                     self.print_output('radio.send(str(' + line.strip()[9:].strip() + '))')
                     continue
 
+                # RADIO
+                m = re.search('(?:^RADIO)', line.strip())
+                if m is not None:
+                    if line.strip()[6:].strip() == 'ON':
+                        self.print_output('radio.on()')
+                    else:
+                        self.print_output('radio.off()')
+                    continue
+
                 # SHOW
                 m = re.search('(?:^SHOW)', line.strip())
                 if m is not None:
