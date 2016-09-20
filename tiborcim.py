@@ -12,21 +12,11 @@ logging.basicConfig(level=logging.DEBUG)
 
 def CimEditMenu(e):
     try:
-        def copy(e, apnd=0):
-            e.widget.event_generate('<Control-c>')
-        def cut(e):
-            e.widget.event_generate('<Control-x>')
-        def paste(e):
-            e.widget.event_generate('<Control-v>')
         e.widget.focus()
-        nclst=[
-               ('Cut', lambda e=e: cut(e)),
-               ('Copy', lambda e=e: copy(e)),
-               ('Paste', lambda e=e: paste(e)),
-               ]
         rmenu = Menu(None, tearoff=0, takefocus=0)
-        for (txt, cmd) in nclst:
-            rmenu.add_command(label=txt, command=cmd)
+        rmenu.add_command(label='Cut', command=lambda e=e: e.widget.event_generate('<Control-x>'))
+        rmenu.add_command(label='Copy', command=lambda e=e: e.widget.event_generate('<Control-c>'))
+        rmenu.add_command(label='Paste', command=lambda e=e: e.widget.event_generate('<Control-v>'))
         rmenu.tk_popup(e.x_root+40, e.y_root+10,entry="0")
     except TclError:
         pass
