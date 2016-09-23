@@ -200,9 +200,9 @@ class compiler:
                     continue
 
                 # FOR
-                m = re.search('(?:^FOR)', line.strip())
+                m = re.search('(?:^FOR) (\w)\s?=\s?(\w) TO (\w)', line.strip())
                 if m is not None:
-                    self.print_output("for i in range(1, 10):")                    
+                    self.print_output("for " + m.group(1) + " in range(" + m.group(2) + ",(" + m.group(3) + ")+1):")
                     self.indent_level += 1
                     continue
 
