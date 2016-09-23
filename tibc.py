@@ -189,16 +189,27 @@ class compiler:
                 m = re.search('(?:^END IF)', line.strip())
                 if m is not None:
                     self.indent_level -= 1
-                    self.print_output("")
                     continue
 
                 # ELSE
                 m = re.search('(?:^ELSE)', line.strip())
                 if m is not None:
                     self.indent_level -= 1
-                    self.print_output()
                     self.print_output("else:")
                     self.indent_level += 1
+                    continue
+
+                # FOR
+                m = re.search('(?:^FOR)', line.strip())
+                if m is not None:
+                    self.print_output("for i in range(1, 10):")                    
+                    self.indent_level += 1
+                    continue
+
+                # NEXT
+                m = re.search('(?:^NEXT)', line.strip())
+                if m is not None:
+                    self.indent_level -= 1
                     continue
 
                 # WHILE
@@ -214,7 +225,6 @@ class compiler:
                 m = re.search('(?:^WEND)', line.strip())
                 if m is not None:
                     self.indent_level -= 1
-                    self.print_output("")
                     continue
 
                 # PYTHON
