@@ -144,7 +144,8 @@ PRINT a
 ```
 
 #### SUB .. END SUB
-Create a subroutine. subroutines are like functions but do not return a value
+Create a subroutine. subroutines are like functions but do not return a value.
+SUBs 
 ```
 SUB test
 	PRINT "Hi"
@@ -157,6 +158,7 @@ test()
 | Function        | Does                                                                                            |
 | --------------- | ------------------------------                                                                  |
 | FOR             | Iterate through number in order                                                                 |
+
 
 ## What is it written in?
 The 'compiler' and sample DE (I would say IDE but it isn't) are written in Python3. I am to be as Pythonic a possible.
@@ -172,3 +174,7 @@ Imaginative I know. Other name's were considered but just didn't feel right
 
 ### How do you say that?!
 Tib - or - kim is how I say it aloud.
+
+
+## Notes
+GitHub shows commits at weird times. unfortunately this occurred through a combination of a incorrectly set clock and a corrupted `.git` directory. long story short some commits show twice, some not at all & others at 1 o'clock in the morning for no apparent reason.
