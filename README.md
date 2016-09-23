@@ -112,6 +112,25 @@ Returns a random number between 0 & 1
 dice = INT(RND * 6 + 1)
 ```
 
+##### SHAKEN
+True or False depending on whether or not the device was shaken since it was last called
+```
+WHILE 1
+	IF SHAKEN THEN
+		times = times + 1
+		SHOW times
+	END IF
+WEND
+```
+
+##### RECEIVE$
+Returns the latest message received by the radio
+```
+IF RECEIVE$ = "hi" THEN
+	PRINT "hi"
+END IF
+```
+
 #### PYTHON .. END PYTHON
 allows the use of pure python code in a Tiborcim script
 e.g.:
@@ -124,10 +143,20 @@ END PYTHON
 PRINT a
 ```
 
+#### SUB .. END SUB
+Create a subroutine. subroutines are like functions but do not return a value
+```
+SUB test
+	PRINT "Hi"
+END SUB
+
+test()
+```
+
 #### Planned
 | Function        | Does                                                                                            |
 | --------------- | ------------------------------                                                                  |
-| SUB END SUB     | Declare a method (no return value)                                                             |
+| FOR             | Iterate through number in order                                                                 |
 
 ## What is it written in?
 The 'compiler' and sample DE (I would say IDE but it isn't) are written in Python3. I am to be as Pythonic a possible.
