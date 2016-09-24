@@ -32,7 +32,7 @@ class CimFilePage(Notebook):
 
         self.vbar_tiborcim = Scrollbar(self.page_tiborcim, name='vbar_tiborcim')
         self.xbar_tiborcim = Scrollbar(self.page_tiborcim, name='xbar_tiborcim', orient=HORIZONTAL)
-        self.text_tiborcim = Text(self.page_tiborcim, wrap=NONE)
+        self.text_tiborcim = Text(self.page_tiborcim, wrap=NONE, undo=True, maxundo=-1)
         self.text_tiborcim.bind('<Button-3>',CimEditMenu, add='')
         self.vbar_tiborcim['command'] = self.text_tiborcim.yview
         self.vbar_tiborcim.pack(side=RIGHT, fill=Y)
@@ -134,7 +134,7 @@ class CimApp(Frame):
         self.master.minsize(300,300)
         self.master.geometry("500x500")
 
-        menubar = Menu(self.master)
+        self.menubar = Menu(self.master)
         self.fileMenu = Menu(self.master, tearoff=0)
         self.fileMenu.add_command(label="New", command=self.new_file,
                                   underline=1, accelerator="Ctrl+N")
@@ -148,15 +148,21 @@ class CimApp(Frame):
                                   underline=1, accelerator="Ctrl+W")
         self.fileMenu.add_separator()
         self.fileMenu.add_command(label="Exit", command=self.file_quit, underline=1)
-        menubar.add_cascade(label="File", menu=self.fileMenu, underline=1)
+        self.menubar.add_cascade(label="File", menu=self.fileMenu, underline=1)
 
         self.edit_program = Menu(self.master, tearoff=0)
         self.edit_program.add_command(label="Undo", command=self.edit_undo,
                                   underline=1, accelerator="Ctrl+Z")
-        self.edit_program.add_separator()
         self.edit_program.add_command(label="Redo", command=self.edit_redo,
                                       underline=1, accelerator="Ctrl+Y")
-        menubar.add_cascade(label="Edit", menu=self.edit_program, underline=1)
+        self.edit_program.add_separator()
+        self.edit_program.add_command(label="Cut", command=self.edit_cut,
+                                      underline=1, accelerator="Ctrl+X")
+        self.edit_program.add_command(label="Copy", command=self.edit_copy,
+                                      underline=1, accelerator="Ctrl+C")
+        self.edit_program.add_command(label="Paste", command=self.edit_paste,
+                                      underline=1, accelerator="Ctrl+V")
+        self.menubar.add_cascade(label="Edit", menu=self.edit_program, underline=1)
 
         self.menu_program = Menu(self.master, tearoff=0)
         self.menu_program.add_command(label="Convert", command=self.convert_file,
@@ -164,7 +170,7 @@ class CimApp(Frame):
         self.menu_program.add_separator()
         self.menu_program.add_command(label="Flash", command=self.flash_file,
                                       underline=1, accelerator="Ctrl+B")
-        menubar.add_cascade(label="Program", menu=self.menu_program, underline=1)
+        self.menubar.add_cascade(label="Program", menu=self.menu_program, underline=1)
 
         self.menu_view = Menu(self.master, tearoff=0)
         viewmode = "tiborcim"
@@ -172,9 +178,9 @@ class CimApp(Frame):
                                        variable=viewmode, value="tiborcim")
         self.menu_view.add_radiobutton(label="Python", command=self.view_python,
                                        variable=viewmode, value="python")
-        menubar.add_cascade(label="View", menu=self.menu_view, underline=1)
+        self.menubar.add_cascade(label="View", menu=self.menu_view, underline=1)
 
-        self.master.config(width=450, height=400, menu=menubar)
+        self.master.config(width=450, height=400, menu=self.menubar)
 
         self.bind_all("<Control-o>", self.load_file)
         self.bind_all("<Control-s>", self.file_save)
@@ -197,6 +203,10 @@ class CimApp(Frame):
                 self.master.title(self.current_file().get_file() + " - Tiborcim")
             else:
                 self.master.title("Tiborcim")
+        if title == "PYTHON":
+            self.menubar.entryconfig("Edit", state=DISABLED)
+        if title == "TIBORCIM":
+            self.menubar.entryconfig("Edit", state=NORMAL)
 
     def add_file(self, file=None):
         filepage = CimFilePage(self.file_tabs)
@@ -254,6 +264,15 @@ class CimApp(Frame):
         if file.close():
             self.file_tabs.forget(file)
             self.files.remove(file)
+
+    def edit_cut(self, event=None):
+        self.current_file().text_tiborcim.event_generate('<Control-x>')
+
+    def edit_copy(self, event=None):
+        self.current_file().text_tiborcim.event_generate('<Control-c>')
+
+    def edit_paste(self, event=None):
+        self.current_file().text_tiborcim.event_generate('<Control-v>')
 
     def edit_redo(self, event=None):
         self.current_file().text_tiborcim.edit_redo()
