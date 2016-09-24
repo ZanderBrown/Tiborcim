@@ -3,11 +3,69 @@
 from tkinter.ttk import Frame, Button, Notebook, Scrollbar
 from tkinter.filedialog import askopenfilename, asksaveasfile
 from tkinter.messagebox import showerror, showinfo, askokcancel
-from tkinter import Menu, Text, DISABLED, NORMAL, END, RIGHT, Y, X, BOTTOM, HORIZONTAL, NONE
+from tkinter import Toplevel, Menu, Text, DISABLED, NORMAL, END, RIGHT, Y, X, BOTTOM, HORIZONTAL, NONE
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
+class CimAbout(Toplevel):
+    def __init__(self, parent):
+        Toplevel.__init__(self, parent)
+        self.configure(borderwidth=5)
+        self.geometry("+%d+%d" % (
+                        parent.winfo_rootx()+30,
+                        parent.winfo_rooty()+30))
+        from tkinter import FALSE
+
+        self.bg = "#bbbbbb"
+        self.fg = "#000000"
+        
+        self.CreateWidgets()
+        self.resizable(height=FALSE, width=FALSE)
+        self.title('About')
+        self.protocol("WM_DELETE_WINDOW", self.close)
+        self.parent = parent
+        self.bind('<Escape>', self.close)
+
+    def CreateWidgets(self):
+        from os.path import join, abspath, dirname
+        from tkinter import Frame, Label, PhotoImage, W, NE, LEFT
+        from sys import version
+        
+        self['borderwidth'] = 0
+        release = version[:version.index(' ')]
+        logofn = join(abspath(dirname(__file__)), "icon.png")
+        self.picture = PhotoImage(master=self._root(), file=logofn)
+        self.frameBg = frameBg = Frame(self, bg=self.bg, borderwidth=0)
+        frameBg.grid(sticky='nsew')
+        label_title = Label(frameBg, text='Cim', fg=self.fg, bg=self.bg,
+                           font=('courier', 24, 'bold'))
+        label_title.grid(row=0, column=1, sticky=W, padx=10, pady=[10,0])
+        label_icon = Label(frameBg, image=self.picture, bg=self.bg)
+        label_icon.grid(row=0, column=0, sticky=NE, rowspan=2,
+                          padx=10, pady=10)
+        byline = "Tiborcim Editor - Tkinter"
+        label_info = Label(frameBg, text=byline, justify=LEFT,
+                          fg=self.fg, bg=self.bg)
+        label_info.grid(row=1, column=1, sticky=W, columnspan=3, padx=10,
+                       pady=[0,20])
+        label_website = Label(frameBg, text='https://github.com/ZanderBrown/Tiborcim',
+                         justify=LEFT, fg=self.fg, bg=self.bg)
+        label_website.grid(row=7, column=1, columnspan=2, sticky=W, padx=10, pady=0)
+        from uflash import get_version as uflash_version
+        from tibc import get_version as tibc_version
+        tiborcim_version = 'Tiborcim ' + tibc_version() + ' (with uFlash ' + uflash_version() + ')' + ' on Python ' + release
+        label_version = Label(frameBg, text=tiborcim_version,
+                             fg=self.fg, bg=self.bg)
+        label_version.grid(row=4, column=1, sticky=W, padx=10, pady=[0,5])
+
+    def close(self, event=None):
+        self.destroy()
+
+    def show(parent):
+        dlg = CimAbout(parent)
+        dlg.lift()
+        dlg.focus_set()
 
 def CimEditMenu(e):
     try:
@@ -180,6 +238,11 @@ class CimApp(Frame):
                                        variable=viewmode, value="python")
         self.menubar.add_cascade(label="View", menu=self.menu_view, underline=1)
 
+        self.menu_help = Menu(self.master, tearoff=0)
+        self.menu_help.add_command(label="About", command=self.help_about,
+                                  underline=1)
+        self.menubar.add_cascade(label="Help", menu=self.menu_help, underline=1)
+
         self.master.config(width=450, height=400, menu=self.menubar)
 
         self.bind_all("<Control-o>", self.load_file)
@@ -288,6 +351,9 @@ class CimApp(Frame):
         
     def edit_undo(self, event=None):
         self.current_file().text_tiborcim.edit_undo()
+
+    def help_about(self, event=None):
+        CimAbout.show(self)
 
     def file_quit(self, event=None):
         for ndx, member in enumerate(self.files):
