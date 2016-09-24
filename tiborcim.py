@@ -8,9 +8,9 @@ from tkinter import Toplevel, Menu, Text, StringVar, DISABLED, NORMAL, END, RIGH
 import logging
 logging.basicConfig (level=logging.DEBUG)
 
-class CimAbout (Toplevel):
-    def __init__ (self, parent):
-        Toplevel.__init__ (self, parent)
+class CimAbout(Toplevel):
+    def __init__(self, parent):
+        Toplevel.__init__(self, parent)
         self.configure(borderwidth=0)
         self.transient(parent)
         self.iconbitmap('icon.ico')
@@ -230,11 +230,12 @@ class CimApp(Frame):
         self.menubar.add_cascade(label="Program", menu=self.menu_program, underline=1)
 
         self.menu_view = Menu(self.master, tearoff=0)
-        viewmode = "tiborcim"
+        self.viewmode = StringVar()
+        self.viewmode.set("tiborcim")
         self.menu_view.add_radiobutton(label="Tiborcim", command=self.view_tiborcim,
-                                       variable=viewmode, value="tiborcim")
+                                       variable=self.viewmode, value="tiborcim")
         self.menu_view.add_radiobutton(label="Python", command=self.view_python,
-                                       variable=viewmode, value="python")
+                                       variable=self.viewmode, value="python")
         self.menubar.add_cascade(label="View", menu=self.menu_view, underline=1)
 
         self.menu_help = Menu(self.master, tearoff=0)
