@@ -132,6 +132,14 @@ class CimApp(Frame):
         self.fileMenu.add_command(label="Exit", command=self.file_quit, underline=1)
         menubar.add_cascade(label="File", menu=self.fileMenu, underline=1)
 
+        self.edit_program = Menu(self.master, tearoff=0)
+        self.edit_program.add_command(label="Undo", command=self.edit_undo,
+                                  underline=1, accelerator="Ctrl+Z")
+        self.edit_program.add_separator()
+        self.edit_program.add_command(label="Redo", command=self.edit_redo,
+                                      underline=1, accelerator="Ctrl+Y")
+        menubar.add_cascade(label="Edit", menu=self.edit_program, underline=1)
+
         self.menu_program = Menu(self.master, tearoff=0)
         self.menu_program.add_command(label="Convert", command=self.convert_file,
                                   underline=1, accelerator="Ctrl+T")
@@ -228,7 +236,12 @@ class CimApp(Frame):
         if file.close():
             self.file_tabs.forget(file)
             self.files.remove(file)
+
+    def edit_redo(self, event=None):
+        self.current_file().text_tiborcim.edit_redo()
         
+    def edit_undo(self, event=None):
+        self.current_file().text_tiborcim.edit_undo()
 
     def file_quit(self, event=None):
         for ndx, member in enumerate(self.files):
