@@ -11,6 +11,11 @@ class TiborcimSyntaxError(Exception):
     def __init__(self, text):
         super(text)
 
+_VERSION = (0, 1, 0, "BETA")
+
+def get_version():
+    return '.'.join([str(i) for i in _VERSION])
+
 class compiler:
     def __init__(self, file, output = None):
         import re
