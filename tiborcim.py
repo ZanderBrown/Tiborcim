@@ -167,9 +167,9 @@ class CimApp(Frame):
         self.menu_program = Menu(self.master, tearoff=0)
         self.menu_program.add_command(label="Convert", command=self.convert_file,
                                   underline=1, accelerator="Ctrl+T")
-        self.menu_program.add_separator()
         self.menu_program.add_command(label="Flash", command=self.flash_file,
                                       underline=1, accelerator="Ctrl+B")
+        self.menu_program.add_separator()
         self.menubar.add_cascade(label="Program", menu=self.menu_program, underline=1)
 
         self.menu_view = Menu(self.master, tearoff=0)
@@ -197,12 +197,21 @@ class CimApp(Frame):
         self.add_file()
 
     def file_changed(self, event):
+        self.menu_program.delete(3, END)
+        for tab in self.file_tabs.tabs():
+            tabtext = self.file_tabs.tab(self.file_tabs.index(tab),"text")
+            self.menu_program.add_command(label=tabtext, 
+                                  underline=1,)
         title = str(event.widget.tab(event.widget.index("current"),"text")).upper().strip()
         if title != "PYTHON" or title != "TIBORCIM":
             if self.current_file().filename is not None:
                 self.master.title(self.current_file().get_file() + " - Tiborcim")
             else:
                 self.master.title("Tiborcim")
+            if str(self.current_file().tab(self.current_file().index("current"),"text")).upper().strip() == "TIBORCIM":
+                self.menubar.entryconfig("Edit", state=NORMAL)
+            else:
+                self.menubar.entryconfig("Edit", state=DISABLED)
         if title == "PYTHON":
             self.menubar.entryconfig("Edit", state=DISABLED)
         if title == "TIBORCIM":
