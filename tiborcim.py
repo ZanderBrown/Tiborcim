@@ -1,9 +1,9 @@
 #! /usr/bin/env python3
 
-from tkinter.ttk import Frame, Button, Notebook
+from tkinter.ttk import Frame, Button, Notebook, Scrollbar
 from tkinter.filedialog import askopenfilename, asksaveasfile
 from tkinter.messagebox import showerror, showinfo, askokcancel
-from tkinter import Menu, DISABLED, NORMAL, END
+from tkinter import Menu, DISABLED, NORMAL, END, RIGHT, Y
 from tkinter.scrolledtext import ScrolledText
 
 import logging
@@ -30,8 +30,12 @@ class CimFilePage(Notebook):
         self.page_python = Frame(self)
         self.add(self.page_tiborcim, text='Tiborcim')
         self.add(self.page_python, text='Python')
+        self.vbar_tiborcim = Scrollbar(self.page_tiborcim, name='vbar_tiborcim')
         self.text_tiborcim = ScrolledText(self.page_tiborcim)
         self.text_tiborcim.bind('<Button-3>',CimEditMenu, add='')
+        self.vbar_tiborcim['command'] = self.text_tiborcim.yview
+        self.vbar_tiborcim.pack(side=RIGHT, fill=Y)
+        self.text_tiborcim['yscrollcommand'] = self.vbar_tiborcim.set
         self.text_tiborcim.pack(expand=1, fill="both")
         self.text_python = ScrolledText(self.page_python, state=DISABLED)
         self.text_python.pack(expand=1, fill="both")
