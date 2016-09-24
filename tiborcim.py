@@ -35,7 +35,8 @@ class CimFilePage(Notebook):
         self.text_tiborcim.pack(expand=1, fill="both")
         self.text_python = ScrolledText(self.page_python, state=DISABLED)
         self.text_python.pack(expand=1, fill="both")
-        self.saved = True;
+        self.saved = True
+        self.filename = None
 
     def save_file(self):
         if self.filename is None:
@@ -117,6 +118,8 @@ class CimApp(Frame):
 
         menubar = Menu(self.master)
         self.fileMenu = Menu(self.master, tearoff=0)
+        self.fileMenu.add_command(label="New", command=self.new_file,
+                                  underline=1, accelerator="Ctrl+N")
         self.fileMenu.add_command(label="Open...", command=self.load_file,
                                   underline=1, accelerator="Ctrl+O")
         self.fileMenu.add_command(label="Save", command=self.file_save,
@@ -136,7 +139,6 @@ class CimApp(Frame):
         self.menu_program.add_command(label="Flash", command=self.flash_file,
                                       underline=1, accelerator="Ctrl+B")
         menubar.add_cascade(label="Program", menu=self.menu_program, underline=1)
-        self.master.config(width=450, height=400, menu=menubar)
 
         self.menu_view = Menu(self.master, tearoff=0)
         viewmode = "tiborcim"
@@ -145,6 +147,8 @@ class CimApp(Frame):
         self.menu_view.add_radiobutton(label="Python", command=self.view_python,
                                        variable=viewmode, value="python")
         menubar.add_cascade(label="View", menu=self.menu_view, underline=1)
+
+        self.master.config(width=450, height=400, menu=menubar)
 
         self.bind_all("<Control-o>", self.load_file)
         self.bind_all("<Control-s>", self.file_save)
@@ -171,7 +175,7 @@ class CimApp(Frame):
     def add_file(self, file=None):
         filepage = CimFilePage(self.file_tabs)
         if file is None:
-            self.file_tabs.add(filepage, text="Unsaved Script")
+            self.file_tabs.add(filepage, text="Unsaved Program")
             filepage.saved = False
             filepage.filename = None
         else:
@@ -185,12 +189,18 @@ class CimApp(Frame):
     def view_python(self, event=None):
         self.current_file().view_python()
 
+    def new_file(self, event=None):
+        filepage = CimFilePage(self.file_tabs)
+        self.file_tabs.add(filepage, text="Unsaved Program")
+        self.files.append(filepage)
+
     def load_file(self, event=None):
         fname = askopenfilename(filetypes=(("Tiborcim", "*.tibas"),("All files", "*.*") ), parent=self.master)
         if fname:
             self.add_file(fname)
 
     def file_save(self, event=None):
+        self.file_tabs.tab(self.current_file(), text=self.current_file().get_file())
         self.current_file().save_file()
 
     def file_save_as(self, event=None):
