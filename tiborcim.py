@@ -3,14 +3,14 @@
 from tkinter.ttk import Frame, Button, Notebook, Scrollbar
 from tkinter.filedialog import askopenfilename, asksaveasfile
 from tkinter.messagebox import showerror, showinfo, askokcancel
-from tkinter import Toplevel, Menu, Text, DISABLED, NORMAL, END, RIGHT, Y, X, BOTTOM, HORIZONTAL, NONE
+from tkinter import Toplevel, Menu, Text, StringVar, DISABLED, NORMAL, END, RIGHT, Y, X, BOTTOM, HORIZONTAL, NONE
 
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig (level=logging.DEBUG)
 
-class CimAbout(Toplevel):
-    def __init__(self, parent):
-        Toplevel.__init__(self, parent)
+class CimAbout (Toplevel):
+    def __init__ (self, parent):
+        Toplevel.__init__ (self, parent)
         self.configure(borderwidth=0)
         self.transient(parent)
         self.iconbitmap('icon.ico')
@@ -186,6 +186,7 @@ class CimApp(Frame):
         self.master.title("Tiborcim")
         self.master.iconbitmap('icon.ico')
         self.files = []
+        self.current_tab = StringVar()
         self.pack(expand=1, fill="both")
         self.master.minsize(300,300)
         self.master.geometry("500x500")
@@ -261,9 +262,10 @@ class CimApp(Frame):
         self.menu_program.delete(3, END)
         for tab in self.file_tabs.tabs():
             tabtext = self.file_tabs.tab(self.file_tabs.index(tab),"text")
-            self.menu_program.add_command(label=tabtext, 
-                                  underline=1,)
+            self.menu_program.add_radiobutton(label=tabtext, command=self.program_switch,
+                                  underline=1, value=tab, variable=self.current_tab)
         title = str(event.widget.tab(event.widget.index("current"),"text")).upper().strip()
+        self.current_tab.set(event.widget.index("current"))
         if title != "PYTHON" or title != "TIBORCIM":
             if self.current_file().filename is not None:
                 self.master.title(self.current_file().get_file() + " - Tiborcim")
@@ -294,6 +296,9 @@ class CimApp(Frame):
 
     def view_python(self, event=None):
         self.current_file().view_python()
+
+    def program_switch(self):
+        self.file_tabs.select(self.current_tab.get())
 
     def new_file(self, event=None):
         filepage = CimFilePage(self.file_tabs)
