@@ -3,7 +3,7 @@
 from tkinter.ttk import Frame, Button, Notebook, Scrollbar
 from tkinter.filedialog import askopenfilename, asksaveasfile
 from tkinter.messagebox import showerror, showinfo, askokcancel
-from tkinter import Menu, Text, DISABLED, NORMAL, END, RIGHT, Y
+from tkinter import Menu, Text, DISABLED, NORMAL, END, RIGHT, Y, X, BOTTOM, HORIZONTAL, NONE
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -31,18 +31,26 @@ class CimFilePage(Notebook):
         self.add(self.page_python, text='Python')
 
         self.vbar_tiborcim = Scrollbar(self.page_tiborcim, name='vbar_tiborcim')
-        self.text_tiborcim = Text(self.page_tiborcim)
+        self.xbar_tiborcim = Scrollbar(self.page_tiborcim, name='xbar_tiborcim', orient=HORIZONTAL)
+        self.text_tiborcim = Text(self.page_tiborcim, wrap=NONE)
         self.text_tiborcim.bind('<Button-3>',CimEditMenu, add='')
         self.vbar_tiborcim['command'] = self.text_tiborcim.yview
         self.vbar_tiborcim.pack(side=RIGHT, fill=Y)
         self.text_tiborcim['yscrollcommand'] = self.vbar_tiborcim.set
+        self.xbar_tiborcim['command'] = self.text_tiborcim.xview
+        self.xbar_tiborcim.pack(side=BOTTOM, fill=X)
+        self.text_tiborcim['xscrollcommand'] = self.xbar_tiborcim.set
         self.text_tiborcim.pack(expand=1, fill="both")
 
         self.vbar_python = Scrollbar(self.page_python, name='vbar_python')
-        self.text_python = Text(self.page_python, state=DISABLED)
+        self.xbar_python = Scrollbar(self.page_python, name='xbar_python', orient=HORIZONTAL)
+        self.text_python = Text(self.page_python, wrap=NONE, state=DISABLED)
         self.vbar_python['command'] = self.text_python.yview
         self.vbar_python.pack(side=RIGHT, fill=Y)
         self.text_python['yscrollcommand'] = self.vbar_python.set
+        self.xbar_python['command'] = self.text_python.xview
+        self.xbar_python.pack(side=BOTTOM, fill=X)
+        self.text_python['xscrollcommand'] = self.xbar_python.set
         self.text_python.pack(expand=1, fill="both")
 
         self.saved = True
