@@ -11,28 +11,21 @@ logging.basicConfig(level=logging.DEBUG)
 class CimAbout(Toplevel):
     def __init__(self, parent):
         Toplevel.__init__(self, parent)
-        self.configure(borderwidth=5)
+        self.configure(borderwidth=0)
+        self.transient(parent)
+        self.iconbitmap('icon.ico')
         self.geometry("+%d+%d" % (
                         parent.winfo_rootx()+30,
                         parent.winfo_rooty()+30))
-        from tkinter import FALSE
+        from os.path import join, abspath, dirname
+        from tkinter import Frame, Label, PhotoImage, W, NE, LEFT, FALSE
+        from sys import version
+        from uflash import get_version as uflash_version
+        from tibc import get_version as tibc_version
 
         self.bg = "#bbbbbb"
         self.fg = "#000000"
         
-        self.CreateWidgets()
-        self.resizable(height=FALSE, width=FALSE)
-        self.title('About')
-        self.protocol("WM_DELETE_WINDOW", self.close)
-        self.parent = parent
-        self.bind('<Escape>', self.close)
-
-    def CreateWidgets(self):
-        from os.path import join, abspath, dirname
-        from tkinter import Frame, Label, PhotoImage, W, NE, LEFT
-        from sys import version
-        
-        self['borderwidth'] = 0
         release = version[:version.index(' ')]
         logofn = join(abspath(dirname(__file__)), "icon.png")
         self.picture = PhotoImage(master=self._root(), file=logofn)
@@ -52,12 +45,16 @@ class CimAbout(Toplevel):
         label_website = Label(frameBg, text='https://github.com/ZanderBrown/Tiborcim',
                          justify=LEFT, fg=self.fg, bg=self.bg)
         label_website.grid(row=7, column=1, columnspan=2, sticky=W, padx=10, pady=0)
-        from uflash import get_version as uflash_version
-        from tibc import get_version as tibc_version
         tiborcim_version = 'Tiborcim ' + tibc_version() + ' (with uFlash ' + uflash_version() + ')' + ' on Python ' + release
         label_version = Label(frameBg, text=tiborcim_version,
                              fg=self.fg, bg=self.bg)
         label_version.grid(row=4, column=1, sticky=W, padx=10, pady=[0,5])
+
+        self.resizable(height=FALSE, width=FALSE)
+        self.title('About')
+        self.protocol("WM_DELETE_WINDOW", self.close)
+        self.parent = parent
+        self.bind('<Escape>', self.close)
 
     def close(self, event=None):
         self.destroy()
@@ -66,6 +63,7 @@ class CimAbout(Toplevel):
         dlg = CimAbout(parent)
         dlg.lift()
         dlg.focus_set()
+        dlg.grab_set()
 
 def CimEditMenu(e):
     try:
