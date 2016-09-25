@@ -83,6 +83,7 @@ class CimFilePage(Notebook):
     def __init__(self, parent):
         Notebook.__init__(self, parent)
         logger = logging.getLogger(__name__)
+        
         self.page_tiborcim = Frame(self)
         self.page_python = Frame(self)
         self.add(self.page_tiborcim, text='Tiborcim')
@@ -90,7 +91,7 @@ class CimFilePage(Notebook):
 
         self.vbar_tiborcim = Scrollbar(self.page_tiborcim, name='vbar_tiborcim')
         self.xbar_tiborcim = Scrollbar(self.page_tiborcim, name='xbar_tiborcim', orient=HORIZONTAL)
-        self.text_tiborcim = Text(self.page_tiborcim, wrap=NONE, undo=True, maxundo=-1)
+        self.text_tiborcim = Text(self.page_tiborcim, wrap=NONE, undo=True, maxundo=-1, borderwidth='0p')
         self.text_tiborcim.bind('<Button-3>',CimEditMenu, add='')
         self.vbar_tiborcim['command'] = self.text_tiborcim.yview
         self.vbar_tiborcim.pack(side=RIGHT, fill=Y)
@@ -102,7 +103,7 @@ class CimFilePage(Notebook):
 
         self.vbar_python = Scrollbar(self.page_python, name='vbar_python')
         self.xbar_python = Scrollbar(self.page_python, name='xbar_python', orient=HORIZONTAL)
-        self.text_python = Text(self.page_python, wrap=NONE, state=DISABLED)
+        self.text_python = Text(self.page_python, wrap=NONE, state=DISABLED, borderwidth='0p')
         self.vbar_python['command'] = self.text_python.yview
         self.vbar_python.pack(side=RIGHT, fill=Y)
         self.text_python['yscrollcommand'] = self.vbar_python.set
