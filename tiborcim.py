@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from tkinter.ttk import Frame, Button, Notebook, Scrollbar
+from tkinter.ttk import Frame, Button, Notebook, Scrollbar, Style
 from tkinter.filedialog import askopenfilename, asksaveasfile
 from tkinter.messagebox import showerror, showinfo, askokcancel
 from tkinter import Toplevel, Menu, Text, StringVar
@@ -20,7 +20,7 @@ class CimAbout(Toplevel):
                         parent.winfo_rootx()+30,
                         parent.winfo_rooty()+30))
         from os.path import join, abspath, dirname
-        from tkinter import Frame, Label, PhotoImage, W, NE, LEFT, FALSE
+        from tkinter import Frame, Label, PhotoImage
         from sys import version
         from uflash import get_version as uflash_version
         from tibc import get_version as tibc_version
@@ -35,24 +35,24 @@ class CimAbout(Toplevel):
         frameBg.grid(sticky='nsew')
         label_title = Label(frameBg, text='Cim', fg=self.fg, bg=self.bg,
                            font=('courier', 24, 'bold'))
-        label_title.grid(row=0, column=1, sticky=W, padx=10, pady=[10,0])
+        label_title.grid(row=0, column=1, sticky="w", padx=10, pady=[10,0])
         label_icon = Label(frameBg, image=self.picture, bg=self.bg)
-        label_icon.grid(row=0, column=0, sticky=NE, rowspan=2,
+        label_icon.grid(row=0, column=0, sticky="ne", rowspan=2,
                           padx=10, pady=10)
         byline = "Tiborcim Editor - Tkinter"
-        label_info = Label(frameBg, text=byline, justify=LEFT,
+        label_info = Label(frameBg, text=byline, justify="left",
                           fg=self.fg, bg=self.bg)
-        label_info.grid(row=1, column=1, sticky=W, columnspan=3, padx=10,
+        label_info.grid(row=1, column=1, sticky="w", columnspan=3, padx=10,
                        pady=[0,20])
         label_website = Label(frameBg, text='https://github.com/ZanderBrown/Tiborcim',
-                         justify=LEFT, fg=self.fg, bg=self.bg)
-        label_website.grid(row=7, column=1, columnspan=2, sticky=W, padx=10, pady=0)
+                         justify="left", fg=self.fg, bg=self.bg)
+        label_website.grid(row=7, column=1, columnspan=2, sticky="w", padx=10, pady=0)
         tiborcim_version = 'Tiborcim ' + tibc_version() + ' (with uFlash ' + uflash_version() + ')' + ' on Python ' + release
         label_version = Label(frameBg, text=tiborcim_version,
                              fg=self.fg, bg=self.bg)
-        label_version.grid(row=4, column=1, sticky=W, padx=10, pady=[0,5])
+        label_version.grid(row=4, column=1, sticky="w", padx=10, pady=[0,5])
 
-        self.resizable(height=FALSE, width=FALSE)
+        self.resizable(height="false", width="false")
         self.title('About')
         self.protocol("WM_DELETE_WINDOW", self.close)
         self.parent = parent
@@ -81,8 +81,12 @@ def CimEditMenu(e):
 
 class CimFilePage(Notebook):
     def __init__(self, parent):
-        Notebook.__init__(self, parent)
+        Notebook.__init__(self, parent, style='Type.TNotebook')
         logger = logging.getLogger(__name__)
+
+        s = Style()
+        s.configure('Type.TNotebook', tabposition="se")
+        
         self.page_tiborcim = Frame(self)
         self.page_python = Frame(self)
         self.add(self.page_tiborcim, text='Tiborcim')
@@ -90,7 +94,7 @@ class CimFilePage(Notebook):
 
         self.vbar_tiborcim = Scrollbar(self.page_tiborcim, name='vbar_tiborcim')
         self.xbar_tiborcim = Scrollbar(self.page_tiborcim, name='xbar_tiborcim', orient=HORIZONTAL)
-        self.text_tiborcim = Text(self.page_tiborcim, wrap=NONE, undo=True, maxundo=-1)
+        self.text_tiborcim = Text(self.page_tiborcim, wrap=NONE, undo=True, maxundo=-1, borderwidth='0p')
         self.text_tiborcim.bind('<Button-3>',CimEditMenu, add='')
         self.vbar_tiborcim['command'] = self.text_tiborcim.yview
         self.vbar_tiborcim.pack(side=RIGHT, fill=Y)
@@ -102,7 +106,7 @@ class CimFilePage(Notebook):
 
         self.vbar_python = Scrollbar(self.page_python, name='vbar_python')
         self.xbar_python = Scrollbar(self.page_python, name='xbar_python', orient=HORIZONTAL)
-        self.text_python = Text(self.page_python, wrap=NONE, state=DISABLED)
+        self.text_python = Text(self.page_python, wrap=NONE, state=DISABLED, borderwidth='0p')
         self.vbar_python['command'] = self.text_python.yview
         self.vbar_python.pack(side=RIGHT, fill=Y)
         self.text_python['yscrollcommand'] = self.vbar_python.set
@@ -121,7 +125,7 @@ class CimFilePage(Notebook):
         else:
             self.saved = True;
             f = open(self.filename, "w")
-            f.write(str(self.text_tiborcim.get(1.0, END)))
+            f.write(self.text_tiborcim.get(1.0, END))
             f.close() 
 
     def convert_file(self):
@@ -141,7 +145,6 @@ class CimFilePage(Notebook):
     def save_file_as(self):
         f = asksaveasfile(mode='w', defaultextension=".tibas", filetypes=(("Tiborcim", "*.tibas"),("All files", "*.*") ))
         if f is not None:
-            print(f.name)
             self.filename = f.name
             self.save_file()
         
@@ -151,10 +154,11 @@ class CimFilePage(Notebook):
         logging.debug('Load ' + name)
         try:
             f = open(name)
-            self.text_tiborcim.delete(1.0, END)
-            self.text_tiborcim.insert(END, f.read())
+            self.text_tiborcim.delete(1.0)
+            self.text_tiborcim.insert(1.0, f.read())
+            self.text_tiborcim.delete('end - 1 chars')
         except:
-            showerror("Open Source File", "Failed to read file\n'%s'" % fname)
+            showerror("Open Source File", "Failed to read file\n'%s'" % name)
         return
 
     def view_tiborcim(self, event=None):
@@ -323,11 +327,12 @@ class CimApp(Frame):
             self.add_file(fname)
 
     def file_save(self, event=None):
-        self.file_tabs.tab(self.current_file(), text=self.current_file().get_file())
         self.current_file().save_file()
+        self.file_tabs.tab(self.current_file(), text=self.current_file().get_file())
 
     def file_save_as(self, event=None):
         self.current_file().save_file_as()
+        self.file_tabs.tab(self.current_file(), text=self.current_file().get_file())
 
     def convert_file(self, event=None):
         self.current_file().convert_file()
