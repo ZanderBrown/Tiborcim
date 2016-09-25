@@ -3,10 +3,12 @@
 from tkinter.ttk import Frame, Button, Notebook, Scrollbar
 from tkinter.filedialog import askopenfilename, asksaveasfile
 from tkinter.messagebox import showerror, showinfo, askokcancel
-from tkinter import Toplevel, Menu, Text, StringVar, DISABLED, NORMAL, END, RIGHT, Y, X, BOTTOM, HORIZONTAL, NONE
+from tkinter import Toplevel, Menu, Text, StringVar
+from tkinter import DISABLED, NORMAL, END, RIGHT, Y, X, BOTTOM, HORIZONTAL, NONE
 
 import logging
-logging.basicConfig (level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
+
 
 class CimAbout(Toplevel):
     def __init__(self, parent):
@@ -109,6 +111,7 @@ class CimFilePage(Notebook):
         self.text_python['xscrollcommand'] = self.xbar_python.set
         self.text_python.pack(expand=1, fill="both")
 
+        self.viewmode = "tiborcim"
         self.saved = True
         self.filename = None
 
@@ -156,15 +159,17 @@ class CimFilePage(Notebook):
 
     def view_tiborcim(self, event=None):
         self.select(self.page_tiborcim)
+        self.viewmode = "tiborcim"
 
     def view_python(self, event=None):
         self.select(self.page_python)
+        self.viewmode = "python"
 
     def get_file(self):
-        import os
-        filebit = self.filename.split(os.sep)
+        from os import sep, altsep
+        filebit = self.filename.split(sep)
         if len(filebit) == 1:
-            filebit = self.filename.split(os.altsep)
+            filebit = self.filename.split(altsep)
         return filebit[len(filebit) - 1];
 
     def close(self):
@@ -260,13 +265,14 @@ class CimApp(Frame):
         self.add_file()
 
     def file_changed(self, event):
+        title = str(event.widget.tab(event.widget.index("current"),"text")).upper().strip()
         self.menu_program.delete(3, END)
         for tab in self.file_tabs.tabs():
             tabtext = self.file_tabs.tab(self.file_tabs.index(tab),"text")
+            if tabtext.upper().strip() == title:
+                self.current_tab.set(tab)        
             self.menu_program.add_radiobutton(label=tabtext, command=self.program_switch,
                                   underline=1, value=tab, variable=self.current_tab)
-        title = str(event.widget.tab(event.widget.index("current"),"text")).upper().strip()
-        self.current_tab.set(event.widget.index("current"))
         if title != "PYTHON" or title != "TIBORCIM":
             if self.current_file().filename is not None:
                 self.master.title(self.current_file().get_file() + " - Tiborcim")
@@ -276,10 +282,15 @@ class CimApp(Frame):
                 self.menubar.entryconfig("Edit", state=NORMAL)
             else:
                 self.menubar.entryconfig("Edit", state=DISABLED)
+            self.viewmode.set(self.current_file().viewmode)
         if title == "PYTHON":
             self.menubar.entryconfig("Edit", state=DISABLED)
+            self.current_file().viewmode = "python";
+            self.viewmode.set("python");
         if title == "TIBORCIM":
             self.menubar.entryconfig("Edit", state=NORMAL)
+            self.current_file().viewmode = "tiborcim";
+            self.viewmode.set("tiborcim");
 
     def add_file(self, file=None):
         filepage = CimFilePage(self.file_tabs)
