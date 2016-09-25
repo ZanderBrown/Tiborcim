@@ -121,7 +121,7 @@ class CimFilePage(Notebook):
         else:
             self.saved = True;
             f = open(self.filename, "w")
-            f.write(str(self.text_tiborcim.get(1.0, END)))
+            f.write(self.text_tiborcim.get(1.0, END))
             f.close() 
 
     def convert_file(self):
@@ -141,7 +141,6 @@ class CimFilePage(Notebook):
     def save_file_as(self):
         f = asksaveasfile(mode='w', defaultextension=".tibas", filetypes=(("Tiborcim", "*.tibas"),("All files", "*.*") ))
         if f is not None:
-            print(f.name)
             self.filename = f.name
             self.save_file()
         
@@ -323,11 +322,12 @@ class CimApp(Frame):
             self.add_file(fname)
 
     def file_save(self, event=None):
-        self.file_tabs.tab(self.current_file(), text=self.current_file().get_file())
         self.current_file().save_file()
+        self.file_tabs.tab(self.current_file(), text=self.current_file().get_file())
 
     def file_save_as(self, event=None):
         self.current_file().save_file_as()
+        self.file_tabs.tab(self.current_file(), text=self.current_file().get_file())
 
     def convert_file(self, event=None):
         self.current_file().convert_file()
