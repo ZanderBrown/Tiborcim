@@ -12,6 +12,43 @@ logging.basicConfig(level=logging.DEBUG)
 
 ICON_PNG = join(abspath(dirname(__file__)), "icon.png")
 ICON_ICO = join(abspath(dirname(__file__)), "icon.ico")
+README_PATH = join(abspath(dirname(__file__)), "readme.md")
+
+class CimReadme(Toplevel):
+    def __init__(self, parent):
+        Toplevel.__init__(self, parent)
+        self.configure(borderwidth=0)
+        self.geometry("+%d+%d" % (
+                        parent.winfo_rootx()+30,
+                        parent.winfo_rooty()+30))
+
+        self.vbar = Scrollbar(self)
+        self.text = Text(self, wrap='word', borderwidth='0p')
+        self.vbar['command'] = self.text.yview
+        self.vbar.pack(side=RIGHT, fill='y')
+        self.text['yscrollcommand'] = self.vbar.set
+        self.text.pack(expand=1, fill="both")
+        try:
+            f = open(README_PATH)
+            self.text.delete(1.0)
+            self.text.insert(1.0, f.read())
+            self.text.delete('end - 1 chars')
+        except:
+            showerror("Error", "Cannot load README!")
+        self.text.config(state='disabled')
+
+        self.title('README')
+        self.protocol("WM_DELETE_WINDOW", self.close)
+        self.parent = parent
+        self.bind('<Escape>', self.close)
+
+    def close(self, event=None):
+        self.destroy()
+
+    def show(parent):
+        dlg = CimReadme(parent)
+        dlg.lift()
+        dlg.focus_set()
 
 class CimAbout(Toplevel):
     def __init__(self, parent):
@@ -248,6 +285,8 @@ class CimApp(Frame):
         self.menubar.add_cascade(label="View", menu=self.menu_view, underline=1)
 
         self.menu_help = Menu(self.master, tearoff=0)
+        self.menu_help.add_command(label="README", command=self.help_readme,
+                                  underline=1)
         self.menu_help.add_command(label="About", command=self.help_about,
                                   underline=1)
         self.menubar.add_cascade(label="Help", menu=self.menu_help, underline=1)
@@ -374,6 +413,9 @@ class CimApp(Frame):
 
     def help_about(self, event=None):
         CimAbout.show(self)
+
+    def help_readme(self, event=None):
+        CimReadme.show(self)
 
     def file_quit(self, event=None):
         for ndx, member in enumerate(self.files):
