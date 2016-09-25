@@ -154,11 +154,11 @@ class CimFilePage(Notebook):
         logging.debug('Load ' + name)
         try:
             f = open(name)
-            self.text_tiborcim.delete(1.0, END)
-            self.text_tiborcim.insert(END, f.read())
-            self.text_tiborcim.event_generate('<BackSpace>')
+            self.text_tiborcim.delete(1.0)
+            self.text_tiborcim.insert(1.0, f.read())
+            self.text_tiborcim.delete('end - 1 chars')
         except:
-            showerror("Open Source File", "Failed to read file\n'%s'" % fname)
+            showerror("Open Source File", "Failed to read file\n'%s'" % name)
         return
 
     def view_tiborcim(self, event=None):
