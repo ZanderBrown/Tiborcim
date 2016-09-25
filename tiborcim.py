@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from tkinter.ttk import Frame, Button, Notebook, Scrollbar
+from tkinter.ttk import Frame, Button, Notebook, Scrollbar, Style
 from tkinter.filedialog import askopenfilename, asksaveasfile
 from tkinter.messagebox import showerror, showinfo, askokcancel
 from tkinter import Toplevel, Menu, Text, StringVar
@@ -20,7 +20,7 @@ class CimAbout(Toplevel):
                         parent.winfo_rootx()+30,
                         parent.winfo_rooty()+30))
         from os.path import join, abspath, dirname
-        from tkinter import Frame, Label, PhotoImage, W, NE, LEFT, FALSE
+        from tkinter import Frame, Label, PhotoImage
         from sys import version
         from uflash import get_version as uflash_version
         from tibc import get_version as tibc_version
@@ -35,24 +35,24 @@ class CimAbout(Toplevel):
         frameBg.grid(sticky='nsew')
         label_title = Label(frameBg, text='Cim', fg=self.fg, bg=self.bg,
                            font=('courier', 24, 'bold'))
-        label_title.grid(row=0, column=1, sticky=W, padx=10, pady=[10,0])
+        label_title.grid(row=0, column=1, sticky="w", padx=10, pady=[10,0])
         label_icon = Label(frameBg, image=self.picture, bg=self.bg)
-        label_icon.grid(row=0, column=0, sticky=NE, rowspan=2,
+        label_icon.grid(row=0, column=0, sticky="ne", rowspan=2,
                           padx=10, pady=10)
         byline = "Tiborcim Editor - Tkinter"
-        label_info = Label(frameBg, text=byline, justify=LEFT,
+        label_info = Label(frameBg, text=byline, justify="left",
                           fg=self.fg, bg=self.bg)
-        label_info.grid(row=1, column=1, sticky=W, columnspan=3, padx=10,
+        label_info.grid(row=1, column=1, sticky="w", columnspan=3, padx=10,
                        pady=[0,20])
         label_website = Label(frameBg, text='https://github.com/ZanderBrown/Tiborcim',
-                         justify=LEFT, fg=self.fg, bg=self.bg)
-        label_website.grid(row=7, column=1, columnspan=2, sticky=W, padx=10, pady=0)
+                         justify="left", fg=self.fg, bg=self.bg)
+        label_website.grid(row=7, column=1, columnspan=2, sticky="w", padx=10, pady=0)
         tiborcim_version = 'Tiborcim ' + tibc_version() + ' (with uFlash ' + uflash_version() + ')' + ' on Python ' + release
         label_version = Label(frameBg, text=tiborcim_version,
                              fg=self.fg, bg=self.bg)
-        label_version.grid(row=4, column=1, sticky=W, padx=10, pady=[0,5])
+        label_version.grid(row=4, column=1, sticky="w", padx=10, pady=[0,5])
 
-        self.resizable(height=FALSE, width=FALSE)
+        self.resizable(height="false", width="false")
         self.title('About')
         self.protocol("WM_DELETE_WINDOW", self.close)
         self.parent = parent
@@ -81,8 +81,11 @@ def CimEditMenu(e):
 
 class CimFilePage(Notebook):
     def __init__(self, parent):
-        Notebook.__init__(self, parent)
+        Notebook.__init__(self, parent, style='Type.TNotebook')
         logger = logging.getLogger(__name__)
+
+        s = Style()
+        s.configure('Type.TNotebook', tabposition="se")
         
         self.page_tiborcim = Frame(self)
         self.page_python = Frame(self)
@@ -153,6 +156,7 @@ class CimFilePage(Notebook):
             f = open(name)
             self.text_tiborcim.delete(1.0, END)
             self.text_tiborcim.insert(END, f.read())
+            self.text_tiborcim.event_generate('<BackSpace>')
         except:
             showerror("Open Source File", "Failed to read file\n'%s'" % fname)
         return
