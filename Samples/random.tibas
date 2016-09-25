@@ -4,3 +4,5 @@ WHILE 1
 		SHOW STR$(num)
 	ENDIF
 WEND
+
+
