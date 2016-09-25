@@ -5,21 +5,23 @@ from tkinter.filedialog import askopenfilename, asksaveasfile
 from tkinter.messagebox import showerror, showinfo, askokcancel
 from tkinter import Toplevel, Menu, Text, StringVar
 from tkinter import DISABLED, NORMAL, END, RIGHT, Y, X, BOTTOM, HORIZONTAL, NONE
-
+from os import sep, altsep
+from os.path import join, abspath, dirname
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
+ICON_PNG = join(abspath(dirname(__file__)), "icon.png")
+ICON_ICO = join(abspath(dirname(__file__)), "icon.ico")
 
 class CimAbout(Toplevel):
     def __init__(self, parent):
         Toplevel.__init__(self, parent)
         self.configure(borderwidth=0)
         self.transient(parent)
-        self.iconbitmap('icon.ico')
+        self.iconbitmap(ICON_ICO)
         self.geometry("+%d+%d" % (
                         parent.winfo_rootx()+30,
                         parent.winfo_rooty()+30))
-        from os.path import join, abspath, dirname
         from tkinter import Frame, Label, PhotoImage
         from sys import version
         from uflash import get_version as uflash_version
@@ -29,7 +31,7 @@ class CimAbout(Toplevel):
         self.fg = "#000000"
         
         release = version[:version.index(' ')]
-        logofn = join(abspath(dirname(__file__)), "icon.png")
+        logofn = ICON_PNG
         self.picture = PhotoImage(master=self._root(), file=logofn)
         self.frameBg = frameBg = Frame(self, bg=self.bg, borderwidth=0)
         frameBg.grid(sticky='nsew')
@@ -170,7 +172,6 @@ class CimFilePage(Notebook):
         self.viewmode = "python"
 
     def get_file(self):
-        from os import sep, altsep
         filebit = self.filename.split(sep)
         if len(filebit) == 1:
             filebit = self.filename.split(altsep)
@@ -193,7 +194,7 @@ class CimApp(Frame):
         Frame.__init__(self)
         self.file = None;
         self.master.title("Tiborcim")
-        self.master.iconbitmap('icon.ico')
+        self.master.iconbitmap(ICON_ICO)
         self.files = []
         self.current_tab = StringVar()
         self.pack(expand=1, fill="both")
