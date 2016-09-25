@@ -3,7 +3,7 @@
 from tkinter.ttk import Frame, Button, Notebook, Scrollbar, Style
 from tkinter.filedialog import askopenfilename, asksaveasfile
 from tkinter.messagebox import showerror, showinfo, askokcancel
-from tkinter import Toplevel, Menu, Text, StringVar
+from tkinter import Toplevel, Menu, Text, StringVar, PhotoImage
 from tkinter import DISABLED, NORMAL, END, RIGHT, Y, X, BOTTOM, HORIZONTAL, NONE
 from os import sep, altsep
 from os.path import join, abspath, dirname
@@ -18,11 +18,10 @@ class CimAbout(Toplevel):
         Toplevel.__init__(self, parent)
         self.configure(borderwidth=0)
         self.transient(parent)
-        self.iconbitmap(ICON_ICO)
         self.geometry("+%d+%d" % (
                         parent.winfo_rootx()+30,
                         parent.winfo_rooty()+30))
-        from tkinter import Frame, Label, PhotoImage
+        from tkinter import Frame, Label
         from sys import version
         from uflash import get_version as uflash_version
         from tibc import get_version as tibc_version
@@ -194,7 +193,7 @@ class CimApp(Frame):
         Frame.__init__(self)
         self.file = None;
         self.master.title("Tiborcim")
-        self.master.iconbitmap(ICON_ICO)
+        self.master.iconphoto(True, PhotoImage(file=ICON_PNG))
         self.files = []
         self.current_tab = StringVar()
         self.pack(expand=1, fill="both")
