@@ -3,7 +3,7 @@
 from tkinter.ttk import Frame, Button, Notebook, Scrollbar, Style
 from tkinter.filedialog import askopenfilename, asksaveasfile
 from tkinter.messagebox import showerror, showinfo, askokcancel
-from tkinter import Toplevel, Menu, Text, StringVar, PhotoImage
+from tkinter import Toplevel, Menu, Text, StringVar, IntVar, PhotoImage
 from tkinter import DISABLED, NORMAL, END, RIGHT, Y, X, BOTTOM, HORIZONTAL, NONE
 from os import sep, altsep
 from os.path import join, abspath, dirname
@@ -105,6 +105,28 @@ class CimAbout(Toplevel):
         dlg.focus_set()
         dlg.grab_set()
 
+class CimTiborcimText(Text):
+    def __init__(self, *args, **kwargs):
+        Text.__init__(self, *args, **kwargs)
+
+    def highlight_pattern(self, pattern, tag, start="1.0", end="end",
+                          regexp=False):
+        start = self.index(start)
+        end = self.index(end)
+        self.mark_set("matchStart", start)
+        self.mark_set("matchEnd", start)
+        self.mark_set("searchLimit", end)
+
+        count = IntVar()
+        while True:
+            index = self.search(pattern, "matchEnd","searchLimit",
+                                count=count, regexp=regexp)
+            if index == "": break
+            if count.get() == 0: break
+            self.mark_set("matchStart", index)
+            self.mark_set("matchEnd", "%s+%sc" % (index, count.get()))
+            self.tag_add(tag, "matchStart", "matchEnd")
+
 def CimEditMenu(e):
     try:
         e.widget.focus()
@@ -132,7 +154,7 @@ class CimFilePage(Notebook):
 
         self.vbar_tiborcim = Scrollbar(self.page_tiborcim, name='vbar_tiborcim')
         self.xbar_tiborcim = Scrollbar(self.page_tiborcim, name='xbar_tiborcim', orient=HORIZONTAL)
-        self.text_tiborcim = Text(self.page_tiborcim, wrap=NONE, undo=True, maxundo=-1, borderwidth='0p')
+        self.text_tiborcim = CimTiborcimText(self.page_tiborcim, wrap=NONE, undo=True, maxundo=-1, borderwidth='0p')
         self.text_tiborcim.bind('<Button-3>',CimEditMenu, add='')
         self.vbar_tiborcim['command'] = self.text_tiborcim.yview
         self.vbar_tiborcim.pack(side=RIGHT, fill=Y)
@@ -141,6 +163,7 @@ class CimFilePage(Notebook):
         self.xbar_tiborcim.pack(side=BOTTOM, fill=X)
         self.text_tiborcim['xscrollcommand'] = self.xbar_tiborcim.set
         self.text_tiborcim.pack(expand=1, fill="both")
+        self.text_tiborcim.tag_configure("red", foreground="#ff0000")
 
         self.vbar_python = Scrollbar(self.page_python, name='vbar_python')
         self.xbar_python = Scrollbar(self.page_python, name='xbar_python', orient=HORIZONTAL)
@@ -156,6 +179,11 @@ class CimFilePage(Notebook):
         def text_changed(evt):
             line, col = self.text_tiborcim.index('insert').split('.')
             txt = self.text_tiborcim.get('%s.0' % line, '%s.end' % line)
+            self.text_tiborcim.highlight_pattern("PRINT", "red")
+            self.text_tiborcim.highlight_pattern("IF", "red")
+            self.text_tiborcim.highlight_pattern("END", "red")
+            self.text_tiborcim.highlight_pattern("WHILE", "red")
+            self.text_tiborcim.highlight_pattern("WEND", "red")
             print('|%s|' % txt)
             self.text_tiborcim.edit_modified(False)
 
