@@ -163,7 +163,9 @@ class CimFilePage(Notebook):
         self.xbar_tiborcim.pack(side=BOTTOM, fill=X)
         self.text_tiborcim['xscrollcommand'] = self.xbar_tiborcim.set
         self.text_tiborcim.pack(expand=1, fill="both")
-        self.text_tiborcim.tag_configure("red", foreground="#ff0000")
+        self.text_tiborcim.tag_configure("keyword", foreground="#ff0000")
+        self.text_tiborcim.tag_configure("string", foreground="#00ff00")
+        self.text_tiborcim.tag_configure("block", foreground="#0000ff")
 
         self.vbar_python = Scrollbar(self.page_python, name='vbar_python')
         self.xbar_python = Scrollbar(self.page_python, name='xbar_python', orient=HORIZONTAL)
@@ -179,12 +181,49 @@ class CimFilePage(Notebook):
         def text_changed(evt):
             line, col = self.text_tiborcim.index('insert').split('.')
             txt = self.text_tiborcim.get('%s.0' % line, '%s.end' % line)
-            self.text_tiborcim.highlight_pattern("PRINT", "red")
-            self.text_tiborcim.highlight_pattern("IF", "red")
-            self.text_tiborcim.highlight_pattern("END", "red")
-            self.text_tiborcim.highlight_pattern("WHILE", "red")
-            self.text_tiborcim.highlight_pattern("WEND", "red")
-            print('|%s|' % txt)
+            blocks = [
+                "WHILE ",
+                "WEND",
+                "SUB",
+                "END SUB",
+                "IF ",
+                "END IF",
+                "ELSEIF",
+                "ELSE",
+                "FOR",
+                "NEXT",
+                "PYTHON",
+                "END PYTHON"
+            ]
+            keywords = [
+                "INT",
+                "RND",
+                "INKEY\$",
+                "STR\$",
+                "RECEIVE\$",
+                "PRINT",
+                "SCREEN",
+                "PSET",
+                "RADIO ON",
+                "RADIO OFF",
+                "SHOW",
+                "IMAGE",
+                "SLEEP",
+                "BROADCAST"
+            ]
+            strings = [
+                "\"(.*?)\"",
+                "'(.*?)'"
+            ]
+            self.text_tiborcim.tag_remove('keyword', '1.0', 'end')
+            self.text_tiborcim.tag_remove('string', '1.0', 'end')
+            self.text_tiborcim.tag_remove('block', '1.0', 'end')
+            for keyword in keywords:
+                self.text_tiborcim.highlight_pattern(keyword + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "keyword", '1.0', 'end', True)
+            for string in strings:
+                self.text_tiborcim.highlight_pattern(string + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "string", '1.0', 'end', True)
+            for block in blocks:
+                self.text_tiborcim.highlight_pattern(block + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "block", '1.0', 'end', True)
             self.text_tiborcim.edit_modified(False)
 
         self.text_tiborcim.bind('<<Modified>>', text_changed)
