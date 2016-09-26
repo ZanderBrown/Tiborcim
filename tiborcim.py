@@ -341,13 +341,14 @@ class CimApp(Frame):
             self.viewmode.set("tiborcim");
 
     def add_file(self, file=None):
+        filepage = CimFilePage(self.file_tabs)
         if file is None:
-            self.new_file()
+            self.file_tabs.add(filepage, text="Unsaved Program")
         else:
-            filepage = CimFilePage(self.file_tabs)
             filepage.load_file(file)
             self.file_tabs.add(filepage, text=filepage.get_file())
-            self.files.append(filepage)
+        self.files.append(filepage)
+        self.file_tabs.select(filepage)
 
     def view_tiborcim(self, event=None):
         self.current_file().view_tiborcim()
@@ -359,9 +360,7 @@ class CimApp(Frame):
         self.file_tabs.select(self.current_tab.get())
 
     def new_file(self, event=None):
-        filepage = CimFilePage(self.file_tabs)
-        self.file_tabs.add(filepage, text="Unsaved Program")
-        self.files.append(filepage)
+        self.add_file()
 
     def load_file(self, event=None):
         fname = askopenfilename(filetypes=(("Tiborcim", "*.tibas"),("All files", "*.*") ), parent=self.master)
