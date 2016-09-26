@@ -153,6 +153,14 @@ class CimFilePage(Notebook):
         self.text_python['xscrollcommand'] = self.xbar_python.set
         self.text_python.pack(expand=1, fill="both")
 
+        def text_changed(evt):
+            line, col = self.text_tiborcim.index('insert').split('.')
+            txt = self.text_tiborcim.get('%s.0' % line, '%s.end' % line)
+            print('|%s|' % txt)
+            self.text_tiborcim.edit_modified(False)
+
+        self.text_tiborcim.bind('<<Modified>>', text_changed)
+
         self.viewmode = "tiborcim"
         self.saved = True
         self.filename = None
