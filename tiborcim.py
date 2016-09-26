@@ -162,6 +162,7 @@ class CimFilePage(Notebook):
             self.save_file_as()
         else:
             self.saved = True;
+            self.text_tiborcim.edit_modified(False)
             f = open(self.filename, "w")
             f.write(self.text_tiborcim.get(1.0, END))
             f.close() 
@@ -177,6 +178,7 @@ class CimFilePage(Notebook):
             self.text_python.delete(1.0, END)
             self.text_python.insert(END, f.read())
             self.text_python.config(state=DISABLED)
+            self.text_tiborcim.edit_modified(False)
         except:
             logging.warning("That's Odd")
 
@@ -195,6 +197,7 @@ class CimFilePage(Notebook):
             self.text_tiborcim.delete(1.0)
             self.text_tiborcim.insert(1.0, f.read())
             self.text_tiborcim.delete('end - 1 chars')
+            self.text_tiborcim.edit_modified(False)
         except:
             showerror("Open Source File", "Failed to read file\n'%s'" % name)
         return
@@ -214,6 +217,8 @@ class CimFilePage(Notebook):
         return filebit[len(filebit) - 1];
 
     def close(self):
+        if self.text_tiborcim.edit_modified():
+            self.saved = False
         if not self.saved:
             if askokcancel("Unsaved Changes", "Somefiles havent been saved!"):
                 logging.debug("Close Anyway")
