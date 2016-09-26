@@ -341,15 +341,13 @@ class CimApp(Frame):
             self.viewmode.set("tiborcim");
 
     def add_file(self, file=None):
-        filepage = CimFilePage(self.file_tabs)
         if file is None:
-            self.file_tabs.add(filepage, text="Unsaved Program")
-            filepage.saved = False
-            filepage.filename = None
+            self.new_file()
         else:
+            filepage = CimFilePage(self.file_tabs)
             filepage.load_file(file)
             self.file_tabs.add(filepage, text=filepage.get_file())
-        self.files.append(filepage)
+            self.files.append(filepage)
 
     def view_tiborcim(self, event=None):
         self.current_file().view_tiborcim()
