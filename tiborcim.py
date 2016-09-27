@@ -11,7 +11,6 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 ICON_PNG = join(abspath(dirname(__file__)), "icon.png")
-ICON_ICO = join(abspath(dirname(__file__)), "icon.ico")
 README_PATH = join(abspath(dirname(__file__)), "readme.md")
 
 class CimReadme(Toplevel):
@@ -106,8 +105,76 @@ class CimAbout(Toplevel):
         dlg.grab_set()
 
 class CimTiborcimText(Text):
-    def __init__(self, *args, **kwargs):
-        Text.__init__(self, *args, **kwargs)
+    def __init__(self, parent):
+        Text.__init__(self, parent, wrap=NONE, undo=True, maxundo=-1, borderwidth='0p')
+        self.vbar = Scrollbar(parent, name='vbar_tiborcim')
+        self.xbar = Scrollbar(parent, name='xbar_tiborcim', orient="horizontal")
+        self.bind('<Button-3>',CimEditMenu, add='')
+        self.vbar['command'] = self.yview
+        self.vbar.pack(side="right", fill=Y)
+        self['yscrollcommand'] = self.vbar.set
+        self.xbar['command'] = self.xview
+        self.xbar.pack(side="bottom", fill=X)
+        self['xscrollcommand'] = self.xbar.set
+        self.pack(expand=1, fill="both")
+        self.tag_configure("keyword", foreground="#ff0000")
+        self.tag_configure("string", foreground="#28a030")
+        self.tag_configure("block", foreground="#0000ff")
+        self.tag_configure("builtin", foreground="#9228a0")
+
+        def text_changed(evt):
+            line, col = self.text_tiborcim.index('insert').split('.')
+            txt = self.text_tiborcim.get('%s.0' % line, '%s.end' % line)
+            blocks = [
+                "WHILE ",
+                "WEND",
+                "SUB ",
+                "END SUB",
+                "IF ",
+                "END IF",
+                "ELSEIF ",
+                "ELSE",
+                "FOR ",
+                "NEXT",
+                "PYTHON",
+                "END PYTHON"
+            ]
+            builtins = [
+                "INKEY\$",
+                "INT",
+                "RND",
+                "STR\$",
+                "RECEIVE\$"
+            ]
+            keywords = [
+                "PRINT ",
+                "SCREEN ",
+                "PSET ",
+                "RADIO ON",
+                "RADIO OFF",
+                "SHOW ",
+                "IMAGE ",
+                "SLEEP ",
+                "BROADCAST "
+            ]
+            strings = [
+                "\"(.*?)\"",
+                "'(.*?)'"
+            ]
+            self.text_tiborcim.tag_remove('keyword', '1.0', 'end')
+            self.text_tiborcim.tag_remove('string', '1.0', 'end')
+            self.text_tiborcim.tag_remove('block', '1.0', 'end')
+            for builtin in builtins:
+                self.text_tiborcim.highlight_pattern(builtin + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "builtin", '1.0', 'end', True)
+            for keyword in keywords:
+                self.text_tiborcim.highlight_pattern(keyword + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "keyword", '1.0', 'end', True)
+            for string in strings:
+                self.text_tiborcim.highlight_pattern(string + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "string", '1.0', 'end', True)
+            for block in blocks:
+                self.text_tiborcim.highlight_pattern(block + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "block", '1.0', 'end', True)
+            self.text_tiborcim.edit_modified(False)
+
+        self.text_tiborcim.bind('<<Modified>>', text_changed)
 
     def highlight_pattern(self, pattern, tag, start="1.0", end="end",
                           regexp=False):
@@ -152,21 +219,7 @@ class CimFilePage(Notebook):
         self.add(self.page_tiborcim, text='Tiborcim')
         self.add(self.page_python, text='Python')
 
-        self.vbar_tiborcim = Scrollbar(self.page_tiborcim, name='vbar_tiborcim')
-        self.xbar_tiborcim = Scrollbar(self.page_tiborcim, name='xbar_tiborcim', orient=HORIZONTAL)
-        self.text_tiborcim = CimTiborcimText(self.page_tiborcim, wrap=NONE, undo=True, maxundo=-1, borderwidth='0p')
-        self.text_tiborcim.bind('<Button-3>',CimEditMenu, add='')
-        self.vbar_tiborcim['command'] = self.text_tiborcim.yview
-        self.vbar_tiborcim.pack(side=RIGHT, fill=Y)
-        self.text_tiborcim['yscrollcommand'] = self.vbar_tiborcim.set
-        self.xbar_tiborcim['command'] = self.text_tiborcim.xview
-        self.xbar_tiborcim.pack(side=BOTTOM, fill=X)
-        self.text_tiborcim['xscrollcommand'] = self.xbar_tiborcim.set
-        self.text_tiborcim.pack(expand=1, fill="both")
-        self.text_tiborcim.tag_configure("keyword", foreground="#ff0000")
-        self.text_tiborcim.tag_configure("string", foreground="#28a030")
-        self.text_tiborcim.tag_configure("block", foreground="#0000ff")
-        self.text_tiborcim.tag_configure("builtin", foreground="#9228a0")
+        self.text_tiborcim = CimTiborcimText(self.page_tiborcim)
 
         self.vbar_python = Scrollbar(self.page_python, name='vbar_python')
         self.xbar_python = Scrollbar(self.page_python, name='xbar_python', orient=HORIZONTAL)
@@ -178,60 +231,6 @@ class CimFilePage(Notebook):
         self.xbar_python.pack(side=BOTTOM, fill=X)
         self.text_python['xscrollcommand'] = self.xbar_python.set
         self.text_python.pack(expand=1, fill="both")
-
-        def text_changed(evt):
-            line, col = self.text_tiborcim.index('insert').split('.')
-            txt = self.text_tiborcim.get('%s.0' % line, '%s.end' % line)
-            blocks = [
-                "WHILE ",
-                "WEND",
-                "SUB",
-                "END SUB",
-                "IF ",
-                "END IF",
-                "ELSEIF",
-                "ELSE",
-                "FOR",
-                "NEXT",
-                "PYTHON",
-                "END PYTHON"
-            ]
-            builtins = [
-                "INKEY\$",
-                "INT",
-                "RND",
-                "STR\$",
-                "RECEIVE\$"
-            ]
-            keywords = [
-                "PRINT",
-                "SCREEN",
-                "PSET",
-                "RADIO ON",
-                "RADIO OFF",
-                "SHOW",
-                "IMAGE",
-                "SLEEP",
-                "BROADCAST"
-            ]
-            strings = [
-                "\"(.*?)\"",
-                "'(.*?)'"
-            ]
-            self.text_tiborcim.tag_remove('keyword', '1.0', 'end')
-            self.text_tiborcim.tag_remove('string', '1.0', 'end')
-            self.text_tiborcim.tag_remove('block', '1.0', 'end')
-            for builtin in builtins:
-                self.text_tiborcim.highlight_pattern(builtin + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "builtin", '1.0', 'end', True)
-            for keyword in keywords:
-                self.text_tiborcim.highlight_pattern(keyword + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "keyword", '1.0', 'end', True)
-            for string in strings:
-                self.text_tiborcim.highlight_pattern(string + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "string", '1.0', 'end', True)
-            for block in blocks:
-                self.text_tiborcim.highlight_pattern(block + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "block", '1.0', 'end', True)
-            self.text_tiborcim.edit_modified(False)
-
-        self.text_tiborcim.bind('<<Modified>>', text_changed)
 
         self.viewmode = "tiborcim"
         self.saved = True
