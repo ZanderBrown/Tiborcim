@@ -134,7 +134,7 @@ class CimTiborcimText(Text):
             ]
             builtins = [
                 "INKEY\$",
-                "STR\$", "INT",                         # Data casting
+                "STR\$", "\bINT",                         # Data casting
                 "RND",
                 "RECEIVE\$"
             ]
