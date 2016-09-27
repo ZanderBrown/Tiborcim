@@ -123,6 +123,7 @@ class CimTiborcimText(Text):
         self.tag_configure("builtin", foreground="#9228a0")
 
         def text_changed(evt):
+            parent.saved = False
             line, col = self.index('insert').split('.')
             txt = self.get('%s.0' % line, '%s.end' % line)
             blocks = [
@@ -231,6 +232,7 @@ class CimFilePage(Notebook):
             self.save_file_as()
         else:
             self.saved = True;
+            self.text_tiborcim.edit_modified(False)
             f = open(self.filename, "w")
             f.write(self.text_tiborcim.get("1.0", "end"))
             f.close() 
@@ -409,12 +411,11 @@ class CimApp(Frame):
         filepage = CimFilePage(self.file_tabs)
         if file is None:
             self.file_tabs.add(filepage, text="Unsaved Program")
-            filepage.saved = False
-            filepage.filename = None
         else:
             filepage.load_file(file)
             self.file_tabs.add(filepage, text=filepage.get_file())
         self.files.append(filepage)
+        self.file_tabs.select(filepage)
 
     def view_tiborcim(self, event=None):
         self.current_file().view_tiborcim()
@@ -426,9 +427,7 @@ class CimApp(Frame):
         self.file_tabs.select(self.current_tab.get())
 
     def new_file(self, event=None):
-        filepage = CimFilePage(self.file_tabs)
-        self.file_tabs.add(filepage, text="Unsaved Program")
-        self.files.append(filepage)
+        self.add_file()
 
     def load_file(self, event=None):
         fname = askopenfilename(filetypes=(("Tiborcim", "*.tibas"),("All files", "*.*") ), parent=self.master)
