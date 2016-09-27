@@ -126,36 +126,25 @@ class CimTiborcimText(Text):
             line, col = self.index('insert').split('.')
             txt = self.get('%s.0' % line, '%s.end' % line)
             blocks = [
-                "WHILE ",
-                "WEND",
-                "SUB ",
-                "END SUB",
-                "IF ",
-                "END IF",
-                "ELSEIF ",
-                "ELSE",
-                "FOR ",
-                "NEXT",
-                "PYTHON",
-                "END PYTHON"
+                "WHILE ", "WEND",                       # WHILE loop
+                "SUB ", "END SUB",                      # SUBs
+                "IF ", "ELSEIF ", "ELSE", "END IF",     # IF control
+                "FOR ", "NEXT",                         # FOR loop
+                "PYTHON", "END PYTHON"                  # PYTHON block
             ]
             builtins = [
                 "INKEY\$",
-                "INT",
+                "STR\$", "INT",                         # Data casting
                 "RND",
-                "STR\$",
                 "RECEIVE\$"
             ]
             keywords = [
+                "SCREEN ", "PSET ",                     # Leds
+                "RADIO ON", "RADIO OFF", "BROADCAST ",  # Radio communications
                 "PRINT ",
-                "SCREEN ",
-                "PSET ",
-                "RADIO ON",
-                "RADIO OFF",
                 "SHOW ",
                 "IMAGE ",
-                "SLEEP ",
-                "BROADCAST "
+                "SLEEP "
             ]
             strings = [
                 "\"(.*?)\"",
@@ -223,13 +212,13 @@ class CimFilePage(Notebook):
         self.text_tiborcim = CimTiborcimText(self.page_tiborcim)
 
         self.vbar_python = Scrollbar(self.page_python, name='vbar_python')
-        self.xbar_python = Scrollbar(self.page_python, name='xbar_python', orient=HORIZONTAL)
-        self.text_python = Text(self.page_python, wrap=NONE, state=DISABLED, borderwidth='0p')
+        self.xbar_python = Scrollbar(self.page_python, name='xbar_python', orient="horizontal")
+        self.text_python = Text(self.page_python, wrap="none", state="disabled", borderwidth='0p')
         self.vbar_python['command'] = self.text_python.yview
-        self.vbar_python.pack(side=RIGHT, fill=Y)
+        self.vbar_python.pack(side="right", fill="y")
         self.text_python['yscrollcommand'] = self.vbar_python.set
         self.xbar_python['command'] = self.text_python.xview
-        self.xbar_python.pack(side=BOTTOM, fill=X)
+        self.xbar_python.pack(side="bottom", fill="x")
         self.text_python['xscrollcommand'] = self.xbar_python.set
         self.text_python.pack(expand=1, fill="both")
 
@@ -243,7 +232,7 @@ class CimFilePage(Notebook):
         else:
             self.saved = True;
             f = open(self.filename, "w")
-            f.write(self.text_tiborcim.get(1.0, END))
+            f.write(self.text_tiborcim.get("1.0", "end"))
             f.close() 
 
     def convert_file(self):
@@ -253,10 +242,10 @@ class CimFilePage(Notebook):
         tibc(self.filename)
         try:
             f = open(self.filename + '.py')
-            self.text_python.config(state=NORMAL)
-            self.text_python.delete(1.0, END)
-            self.text_python.insert(END, f.read())
-            self.text_python.config(state=DISABLED)
+            self.text_python.config(state="normal")
+            self.text_python.delete("1.0", "end")
+            self.text_python.insert("end", f.read())
+            self.text_python.config(state="disabled")
         except:
             logging.warning("That's Odd")
 
@@ -272,9 +261,10 @@ class CimFilePage(Notebook):
         logging.debug('Load ' + name)
         try:
             f = open(name)
-            self.text_tiborcim.delete(1.0)
-            self.text_tiborcim.insert(1.0, f.read())
+            self.text_tiborcim.delete("1.0")
+            self.text_tiborcim.insert("1.0", f.read())
             self.text_tiborcim.delete('end - 1 chars')
+            f.close()
         except:
             showerror("Open Source File", "Failed to read file\n'%s'" % name)
         return
