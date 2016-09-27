@@ -105,7 +105,7 @@ class CimAbout(Toplevel):
         dlg.grab_set()
 
 class CimTiborcimText(Text):
-    def __init__(self, parent):
+    def __init__(self, parent, file=None):
         Text.__init__(self, parent, wrap=NONE, undo=True, maxundo=-1, borderwidth='0p')
         self.vbar = Scrollbar(parent, name='vbar_tiborcim')
         self.xbar = Scrollbar(parent, name='xbar_tiborcim', orient="horizontal")
@@ -123,7 +123,8 @@ class CimTiborcimText(Text):
         self.tag_configure("builtin", foreground="#9228a0")
 
         def text_changed(evt):
-            parent.saved = False
+            if file is not None:
+                file.saved = False
             line, col = self.index('insert').split('.')
             txt = self.get('%s.0' % line, '%s.end' % line)
             blocks = [
@@ -210,7 +211,7 @@ class CimFilePage(Notebook):
         self.add(self.page_tiborcim, text='Tiborcim')
         self.add(self.page_python, text='Python')
 
-        self.text_tiborcim = CimTiborcimText(self.page_tiborcim)
+        self.text_tiborcim = CimTiborcimText(self.page_tiborcim, self)
 
         self.vbar_python = Scrollbar(self.page_python, name='vbar_python')
         self.xbar_python = Scrollbar(self.page_python, name='xbar_python', orient="horizontal")
@@ -258,7 +259,6 @@ class CimFilePage(Notebook):
             self.save_file()
         
     def load_file(self, name):
-        self.saved = True;
         self.filename = name
         logging.debug('Load ' + name)
         try:
@@ -266,6 +266,7 @@ class CimFilePage(Notebook):
             self.text_tiborcim.delete("1.0")
             self.text_tiborcim.insert("1.0", f.read())
             self.text_tiborcim.delete('end - 1 chars')
+            self.saved = True;
             f.close()
         except:
             showerror("Open Source File", "Failed to read file\n'%s'" % name)
