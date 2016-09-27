@@ -126,25 +126,25 @@ class CimTiborcimText(Text):
             line, col = self.index('insert').split('.')
             txt = self.get('%s.0' % line, '%s.end' % line)
             blocks = [
-                "WHILE ", "WEND",                       # WHILE loop
-                "SUB ", "END SUB",                      # SUBs
-                "IF ", "ELSEIF ", "ELSE", "END IF",     # IF control
-                "FOR ", "NEXT",                         # FOR loop
+                "WHILE", "WEND",                        # WHILE loop
+                "SUB", "END SUB",                       # SUBs
+                "IF", "ELSEIF", "ELSE", "END IF",       # IF control
+                "FOR", "NEXT",                          # FOR loop
                 "PYTHON", "END PYTHON"                  # PYTHON block
             ]
             builtins = [
                 "INKEY\$",
-                "STR\$", "\bINT",                         # Data casting
+                "STR\$", "INT",                         # Data casting
                 "RND",
                 "RECEIVE\$"
             ]
             keywords = [
-                "SCREEN ", "PSET ",                     # Leds
-                "RADIO ON", "RADIO OFF", "BROADCAST ",  # Radio communications
-                "PRINT ",
-                "SHOW ",
-                "IMAGE ",
-                "SLEEP "
+                "SCREEN", "PSET",                       # Leds
+                "RADIO ON", "RADIO OFF", "BROADCAST",   # Radio communications
+                "PRINT",
+                "SHOW",
+                "IMAGE",
+                "SLEEP"
             ]
             strings = [
                 "\"(.*?)\"",
@@ -155,13 +155,13 @@ class CimTiborcimText(Text):
             self.tag_remove('string', '1.0', 'end')
             self.tag_remove('block', '1.0', 'end')
             for builtin in builtins:
-                self.highlight_pattern(builtin + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "builtin", '1.0', 'end', True)
+                self.highlight_pattern("\y" + builtin + "\y(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "builtin", '1.0', 'end', True)
             for keyword in keywords:
-                self.highlight_pattern(keyword + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "keyword", '1.0', 'end', True)
+                self.highlight_pattern("\y" + keyword + "\y(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "keyword", '1.0', 'end', True)
             for string in strings:
                 self.highlight_pattern(string + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "string", '1.0', 'end', True)
             for block in blocks:
-                self.highlight_pattern(block + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "block", '1.0', 'end', True)
+                self.highlight_pattern("\y" + block + "\y(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "block", '1.0', 'end', True)
             self.edit_modified(False)
 
         self.bind('<<Modified>>', text_changed)
