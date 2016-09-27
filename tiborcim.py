@@ -164,8 +164,9 @@ class CimFilePage(Notebook):
         self.text_tiborcim['xscrollcommand'] = self.xbar_tiborcim.set
         self.text_tiborcim.pack(expand=1, fill="both")
         self.text_tiborcim.tag_configure("keyword", foreground="#ff0000")
-        self.text_tiborcim.tag_configure("string", foreground="#00ff00")
+        self.text_tiborcim.tag_configure("string", foreground="#28a030")
         self.text_tiborcim.tag_configure("block", foreground="#0000ff")
+        self.text_tiborcim.tag_configure("builtin", foreground="#9228a0")
 
         self.vbar_python = Scrollbar(self.page_python, name='vbar_python')
         self.xbar_python = Scrollbar(self.page_python, name='xbar_python', orient=HORIZONTAL)
@@ -195,12 +196,14 @@ class CimFilePage(Notebook):
                 "PYTHON",
                 "END PYTHON"
             ]
-            keywords = [
+            builtins = [
+                "INKEY\$",
                 "INT",
                 "RND",
-                "INKEY\$",
                 "STR\$",
-                "RECEIVE\$",
+                "RECEIVE\$"
+            ]
+            keywords = [
                 "PRINT",
                 "SCREEN",
                 "PSET",
@@ -218,6 +221,8 @@ class CimFilePage(Notebook):
             self.text_tiborcim.tag_remove('keyword', '1.0', 'end')
             self.text_tiborcim.tag_remove('string', '1.0', 'end')
             self.text_tiborcim.tag_remove('block', '1.0', 'end')
+            for builtin in builtins:
+                self.text_tiborcim.highlight_pattern(builtin + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "builtin", '1.0', 'end', True)
             for keyword in keywords:
                 self.text_tiborcim.highlight_pattern(keyword + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "keyword", '1.0', 'end', True)
             for string in strings:
