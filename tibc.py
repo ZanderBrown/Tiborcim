@@ -160,10 +160,7 @@ class compiler:
                         self.print_output(line.strip())
 
                 # PSET
-                m = re.search('(?:^PSET)', line.strip())
-                if m is not None:
-                    self.print_output('display.set_pixel(' + line.strip()[4:].strip() + ')')
-                    continue
+                self.print_output(re.sub(r'PSET\W([0-5])\W?,\W?([0-5])\W?,\W?([0-9])', r'display.set_pixel(\1,\2,\3)', line.strip()))
 
                 # IF
                 m = re.search('(?:^IF)', line.strip())
