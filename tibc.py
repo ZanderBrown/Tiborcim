@@ -50,8 +50,14 @@ class compiler:
             "\t\t" +  'return \'\'' + "\n"
         ]
         self.code = ["\n"]
+
+        self.regexs = {
+            'NOT': r'\bNOT\b(?=([^\"]*\"[^\"]*\")*[^\"]*$)',
+            'PSET': r'PSET\W([0-5])\W?,\W?([0-5])\W?,\W?([0-9])(?=([^\"]*\"[^\"]*\")*[^\"]*$)'
+        }
         
         for line in self.content:
+            stripedline = line.strip()
             if self.python_block is False:
                 # INKEY
                 if re.search("INKEY\$(?=([^\"]*\"[^\"]*\")*[^\"]*$)", line.strip()) is not None:
@@ -84,6 +90,12 @@ class compiler:
 
                 # SCREEN
                 line = re.sub("SHAKEN(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "accelerometer.was_gesture(\"shake\")", line.strip())
+
+                # NOT
+                #self.print_output(re.sub(r'\bNOT\b(?=([^\"]*\"[^\"]*\")*[^\"]*$)', '!', line.strip()))
+                if re.search(self.regexs['NOT'], stripedline) is not None:
+                    self.print_output(re.sub(r'\bNOT\b(?=([^\"]*\"[^\"]*\")*[^\"]*$)', '!', line.strip()))
+                    continue
 
                 # PRINT
                 m = re.search('(?:^PRINT)', line.strip())
@@ -160,7 +172,9 @@ class compiler:
                         self.print_output(line.strip())
 
                 # PSET
-                self.print_output(re.sub(r'PSET\W([0-5])\W?,\W?([0-5])\W?,\W?([0-9])', r'display.set_pixel(\1,\2,\3)', line.strip()))
+                if re.search(self.regexs['PSET'], stripedline) is not None:
+                    self.print_output(re.sub(self.regexs['PSET'], r'display.set_pixel(\1,\2,\3)', line.strip()))
+                    continue
 
                 # IF
                 m = re.search('(?:^IF)', line.strip())
