@@ -121,6 +121,7 @@ class CimTiborcimText(Text):
         self.tag_configure("string", foreground="#28a030")
         self.tag_configure("block", foreground="#0000ff")
         self.tag_configure("builtin", foreground="#9228a0")
+        self.tag_configure("comment", foreground="#74787f")
 
         def text_changed(evt):
             if file is not None:
@@ -130,14 +131,17 @@ class CimTiborcimText(Text):
             blocks = [
                 "WHILE", "WEND",                        # WHILE loop
                 "SUB", "END SUB",                       # SUBs
-                "IF", "ELSEIF", "ELSE", "END IF",       # IF control
+                "IF", "ELSEIF", "ELSE", "END IF", "THEN"# IF control
                 "FOR", "NEXT",                          # FOR loop
                 "PYTHON", "END PYTHON"                  # PYTHON block
             ]
             builtins = [
+                "INT",
+                "RND"
+            ]
+            builtinvars = [
+                "STR\$",
                 "INKEY\$",
-                "STR\$", "INT",                         # Data casting
-                "RND",
                 "RECEIVE\$"
             ]
             keywords = [
@@ -158,12 +162,15 @@ class CimTiborcimText(Text):
             self.tag_remove('block', '1.0', 'end')
             for builtin in builtins:
                 self.highlight_pattern("\y" + builtin + "\y(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "builtin", '1.0', 'end', True)
+            for builtinvar in builtinvars:
+                self.highlight_pattern("\y" + builtinvar + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "builtin", '1.0', 'end', True)
             for keyword in keywords:
                 self.highlight_pattern("\y" + keyword + "\y(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "keyword", '1.0', 'end', True)
             for string in strings:
                 self.highlight_pattern(string + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "string", '1.0', 'end', True)
             for block in blocks:
                 self.highlight_pattern("\y" + block + "\y(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "block", '1.0', 'end', True)
+            self.highlight_pattern("^\'(.*?)$", "comment", '1.0', 'end', True)
             self.edit_modified(False)
 
         self.bind('<<Modified>>', text_changed)
