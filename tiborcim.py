@@ -131,13 +131,15 @@ class CimTiborcimText(Text):
             blocks = [
                 "WHILE", "WEND",                        # WHILE loop
                 "SUB", "END SUB",                       # SUBs
-                "IF", "ELSEIF", "ELSE", "END IF", "THEN"# IF control
-                "FOR", "NEXT",                          # FOR loop
+                "IF", "ELSEIF", "ELSE", "END IF", "THEN",# IF control
+                "FOR", "TO", "NEXT",                    # FOR loop
                 "PYTHON", "END PYTHON"                  # PYTHON block
             ]
             builtins = [
                 "INT",
-                "RND"
+                "RND",
+                "SHAKEN",
+                "NOT", "AND", "OR"                      # Not implemented
             ]
             builtinvars = [
                 "STR\$",
@@ -146,7 +148,7 @@ class CimTiborcimText(Text):
             ]
             keywords = [
                 "SCREEN", "PSET",                       # Leds
-                "RADIO ON", "RADIO OFF", "BROADCAST",   # Radio communications
+                "RADIO\W(ON|OFF)", "BROADCAST",         # Radio communications
                 "PRINT",
                 "SHOW",
                 "IMAGE",
