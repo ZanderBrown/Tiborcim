@@ -52,8 +52,12 @@ class compiler:
         self.code = ["\n"]
 
         self.regexs = {
-            'NOT': r'\bNOT\b(?=([^\"]*\"[^\"]*\")*[^\"]*$)',
-            'PSET': r'PSET\W([0-5])\W?,\W?([0-5])\W?,\W?([0-9])(?=([^\"]*\"[^\"]*\")*[^\"]*$)'
+            'OR':           r'\bOR\b(?=([^\"]*\"[^\"]*\")*[^\"]*$)',
+            'AND':          r'\bAND\b(?=([^\"]*\"[^\"]*\")*[^\"]*$)',
+            'NOT':          r'\bNOT\b(?=([^\"]*\"[^\"]*\")*[^\"]*$)',
+            'PSET':         r'PSET\W([0-5])\W?,\W?([0-5])\W?,\W?([0-9])(?=([^\"]*\"[^\"]*\")*[^\"]*$)',
+            'PRINT':        r'^PRINT\W(.*)',
+            'BROADCAST':    r'^BROADCAST\W(.*)'
         }
         
         for line in self.content:
@@ -92,25 +96,32 @@ class compiler:
                 line = re.sub("SHAKEN(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "accelerometer.was_gesture(\"shake\")", line.strip())
 
                 # NOT
-                #self.print_output(re.sub(r'\bNOT\b(?=([^\"]*\"[^\"]*\")*[^\"]*$)', '!', line.strip()))
                 if re.search(self.regexs['NOT'], stripedline) is not None:
-                    self.print_output(re.sub(r'\bNOT\b(?=([^\"]*\"[^\"]*\")*[^\"]*$)', '!', line.strip()))
+                    self.print_output(re.sub(self.regexs['NOT'], '!', stripedline))
+                    continue
+
+                # AND
+                if re.search(self.regexs['AND'], stripedline) is not None:
+                    self.print_output(re.sub(self.regexs['AND'], 'and', stripedline))
+                    continue
+
+                # OR
+                if re.search(self.regexs['OR'], stripedline) is not None:
+                    self.print_output(re.sub(self.regexs['OR'], 'or', stripedline))
                     continue
 
                 # PRINT
-                m = re.search('(?:^PRINT)', line.strip())
-                if m is not None:
+                if re.search(self.regexs['PRINT'], stripedline) is not None:
                     # Wrap the argument in str() because display.scroll only accepts strings
-                    self.print_output('display.scroll(str(' + line.strip()[5:].strip() + '))')
+                    self.print_output(re.sub(self.regexs['PRINT'], r'display.scroll(str(\1))', stripedline))
                     continue
 
                 # BROADCAST
-                m = re.search('(?:^BROADCAST)', line.strip())
-                if m is not None:
+                if re.search(self.regexs['BROADCAST'], stripedline) is not None:
+                    self.print_output(re.sub(self.regexs['BROADCAST'], r'radio.send(str(\1))', stripedline))
                     if not self.radio_imported:
                         self.code_header.append('import radio' + "\n")
                         self.radio_imported = True
-                    self.print_output('radio.send(str(' + line.strip()[9:].strip() + '))')
                     continue
 
                 # RADIO
