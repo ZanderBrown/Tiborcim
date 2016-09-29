@@ -11,7 +11,7 @@ class TiborcimSyntaxError(Exception):
     def __init__(self, text):
         super(text)
 
-_VERSION = (0, 1, 0, "BETA")
+_VERSION = (0, 1, 5, "BETA")
 
 def get_version():
     return '.'.join([str(i) for i in _VERSION])
@@ -55,7 +55,7 @@ class compiler:
             'OR':           r'\bOR\b(?=([^\"]*\"[^\"]*\")*[^\"]*$)',
             'AND':          r'\bAND\b(?=([^\"]*\"[^\"]*\")*[^\"]*$)',
             'NOT':          r'\bNOT\b(?=([^\"]*\"[^\"]*\")*[^\"]*$)',
-            'PSET':         r'PSET\W([0-5])\W?,\W?([0-5])\W?,\W?([0-9])(?=([^\"]*\"[^\"]*\")*[^\"]*$)',
+            'PSET':         r'PSET\W([0-5]|.*)\W?,\W?([0-5]|.*)\W?,\W?([0-9]|.*)$(?=([^\"]*\"[^\"]*\")*[^\"]*$)',
             'PRINT':        r'^PRINT\W(.*)',
             'BROADCAST':    r'^BROADCAST\W(.*)'
         }
