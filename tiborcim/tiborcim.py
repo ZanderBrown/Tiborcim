@@ -10,7 +10,7 @@ from os.path import join, abspath, dirname
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
-ICON_PNG = join(abspath(dirname(__file__)), "icon.png")
+ICON_PNG = tiborcim.resources.path("logo.png")
 README_PATH = join(abspath(dirname(__file__)), "readme.md")
 
 class CimReadme(Toplevel):
@@ -505,12 +505,12 @@ class CimApp(Frame):
         self.quit()
 
 _HELP_TEXT = """
-Tiborcim - GUI for Tibc the TIBORCIM compiler\n
+Cim - GUI for Tibc the TIBORCIM compiler\n
  (C) Copyright Alexander Brown 2016\r\n
 """
 
 
-if __name__ == "__main__":
+def run():
     import argparse, sys
     argv = sys.argv[1:]
     try:
@@ -519,3 +519,6 @@ if __name__ == "__main__":
         CimApp().mainloop()
     except Exception as ex:
         logging.debug(ex)
+
+if __name__ == "__main__":
+    run()

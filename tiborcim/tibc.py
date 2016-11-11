@@ -341,7 +341,7 @@ Tibc - Tiborcim Transpiler / MicroPython Flasher\r\n
  Uses uFlash (http://uflash.readthedocs.org/) for flashing a Micro:Bit\r\n
 """
 
-if __name__ == "__main__":
+def run():
     import sys
     import argparse
     argv = sys.argv[1:]
@@ -359,3 +359,7 @@ if __name__ == "__main__":
     except Exception as ex:
         # The exception of no return. Print the exception information.
         print(ex)
+
+
+if __name__ == "__main__":
+    run()

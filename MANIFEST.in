@@ -1,0 +1,6 @@
+include tiborcim/*
+include README.rst
+include LICENSE
+include conf/*
+include tiborcim/resources/images/*
+include run.py
