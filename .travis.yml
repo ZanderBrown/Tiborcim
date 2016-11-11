@@ -19,7 +19,7 @@ before_install:
   - sudo echo $PATH
   - sudo python3 --version
   - sudo python3 -c "import struct; print(struct.calcsize('P') * 8)"
-  - sudo pip3 --version
+  - sudo python3 -m pip --version
   - pyinstaller --version
 
 # Build Tiborcim and time stamp it
