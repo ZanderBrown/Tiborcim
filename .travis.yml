@@ -22,7 +22,7 @@ before_install:
   - sudo pip3 --version
   - pyinstaller --version
 
-# Build Mu and time stamp it
+# Build Tiborcim and time stamp it
 install:
   - sudo pip3 install -r requirements.txt
 
