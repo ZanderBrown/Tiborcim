@@ -7,10 +7,11 @@ from tkinter import Toplevel, Menu, Text, StringVar, IntVar, PhotoImage
 from tkinter import DISABLED, NORMAL, END, RIGHT, Y, X, BOTTOM, HORIZONTAL, NONE
 from os import sep, altsep
 from os.path import join, abspath, dirname
+import tiborcim.resources
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
-ICON_PNG = tiborcim.resources.path("logo.png")
+ICON_PNG = tiborcim.resources.path("icon.png")
 README_PATH = join(abspath(dirname(__file__)), "readme.md")
 
 class CimReadme(Toplevel):
@@ -59,15 +60,15 @@ class CimAbout(Toplevel):
                         parent.winfo_rooty()+30))
         from tkinter import Frame, Label
         from sys import version
-        from uflash import get_version as uflash_version
-        from tibc import get_version as tibc_version
+        from tiborcim.contrib.uflash import get_version as uflash_version
+        from tiborcim.tibc import get_version as tibc_version
 
         self.bg = "#bbbbbb"
         self.fg = "#000000"
         
         release = version[:version.index(' ')]
         logofn = ICON_PNG
-        self.picture = PhotoImage(master=self._root(), file=logofn)
+        self.picture = PhotoImage(master=self._root(), file=logofn, width=64, height=64)
         self.frameBg = frameBg = Frame(self, bg=self.bg, borderwidth=0)
         frameBg.grid(sticky='nsew')
         label_title = Label(frameBg, text='Cim', fg=self.fg, bg=self.bg,
@@ -248,7 +249,7 @@ class CimFilePage(Notebook):
             f.close() 
 
     def convert_file(self):
-        from tibc import compiler as tibc
+        from tiborcim.tibc import compiler as tibc
         # Should warn if unsaved...
         self.save_file()
         tibc(self.filename)
@@ -459,8 +460,8 @@ class CimApp(Frame):
         return self.files[int(self.file_tabs.index(self.file_tabs.select()))]
 
     def flash_file(self, event=None):
-        from tibc import flash
-        from tibc import TibcStatus as status
+        from tiborcim.tibc import flash
+        from tiborcim.tibc import TibcStatus as status
         self.current_file().convert_file()
         result = flash(self.current_file().filename + '.py')
         if result is status.SUCCESS:

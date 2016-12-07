@@ -300,7 +300,7 @@ class compiler:
             self.file_output.write(line)
 
 def flash(file, path = None):
-    import uflash, os
+    import tiborcim.contrib.uflash as uflash, os
 
     # Make a hex
     try:

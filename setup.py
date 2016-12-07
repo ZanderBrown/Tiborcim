@@ -1,5 +1,13 @@
+#! /usr/bin/env python3
+
 from setuptools import setup
 from tiborcim.tibc import get_version
+from os import name as name
+if 'nt' in name:
+    data = [('share/pixmaps', ['conf/cim.png', ]),
+                ('share/applications', ['conf/cim.desktop', ])]
+else:
+    data = []
 
 setup(
     name='Tiborcim',
@@ -23,9 +31,8 @@ setup(
     entry_points={
         'console_scripts': [
             "tibc = tiborcim.tibc:run",
-            "cim = tiborcim.tiborcim:run"
+            "cim = tiborcim.cim:run"
         ],
     },
-    data_files=[('/usr/share/pixmaps', ['conf/cim.png', ]),
-                ('/usr/share/applications', ['conf/cim.desktop', ])],
+    data_files=data,
 )
