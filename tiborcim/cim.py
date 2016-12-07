@@ -12,7 +12,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 ICON_PNG = tiborcim.resources.path("icon.png")
-README_PATH = join(abspath(dirname(__file__)), "readme.md")
+README_PATH = tiborcim.resources.readme_path()
 
 class CimReadme(Toplevel):
     def __init__(self, parent):

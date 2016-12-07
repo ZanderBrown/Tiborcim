@@ -3,11 +3,16 @@
 from setuptools import setup
 from tiborcim.tibc import get_version
 import os
+
+samples = []
+for file in os.listdir("samples"):
+    if file.endswith(".tibas"):
+        samples.append('samples/' + file)
+
+data = [('samples', samples), ('', ['README.md'])]
 if 'nt' not in os.name:
-    data = [('/usr/share/pixmaps', ['conf/cim.png', ]),
+    data += [('/usr/share/pixmaps', ['conf/cim.png', ]),
                 ('/usr/share/applications', ['conf/cim.desktop', ])]
-else:
-    data = []
 
 setup(
     name='Tiborcim',
