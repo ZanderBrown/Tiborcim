@@ -2,10 +2,10 @@
 
 from setuptools import setup
 from tiborcim.tibc import get_version
-from os import name as name
-if 'nt' in name:
-    data = [('share/pixmaps', ['conf/cim.png', ]),
-                ('share/applications', ['conf/cim.desktop', ])]
+import os
+if 'nt' not in os.name:
+    data = [('/usr/share/pixmaps', ['conf/cim.png', ]),
+                ('/usr/share/applications', ['conf/cim.desktop', ])]
 else:
     data = []
 
