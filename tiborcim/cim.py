@@ -11,8 +11,12 @@ import tiborcim.resources
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
-ICON_PNG = tiborcim.resources.path("icon.png")
+ICON_PNG = tiborcim.resources.icon_path()
 README_PATH = tiborcim.resources.readme_path()
+
+print(tiborcim.resources.samples_list())
+for sample in tiborcim.resources.samples_list():
+    print(tiborcim.resources.sample_path(sample))
 
 class CimReadme(Toplevel):
     def __init__(self, parent):

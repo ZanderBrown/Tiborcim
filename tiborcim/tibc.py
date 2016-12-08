@@ -11,7 +11,7 @@ class TiborcimSyntaxError(Exception):
     def __init__(self, text):
         super(text)
 
-_VERSION = (0, 1, 5, "BETA")
+_VERSION = (0, 1, 7, "BETA")
 
 def get_version():
     return '.'.join([str(i) for i in _VERSION])
