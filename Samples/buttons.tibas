@@ -1,3 +1,5 @@
+' Loop endlessly
 WHILE 1
+	' Display the currently pressed button code
 	PRINT INKEY$
 WEND

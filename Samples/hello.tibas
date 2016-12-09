@@ -1,13 +1,19 @@
-' Hi
+' Display the classic message
 PRINT "Hello, World"
-PRINT "?!"
 
+' Python blocks lets up use pure python in our programs
 PYTHON
+# Remember the you must use python code within this block
+# including comment style
 a = 1
 END PYTHON
 
-IF (a = 1) THEN
-PRINT "If"
+' Check that the variable defined in the python block
+' has the expected value
+IF a = 1 THEN
+	' It does!
+	PRINT "a = 1"
+ELSE
+	' Apparently not
+	PRINT "a != 1"
 END IF
-
-PRINT '.'

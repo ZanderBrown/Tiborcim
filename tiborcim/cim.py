@@ -507,7 +507,7 @@ class CimApp(Frame):
         return self.files[int(self.file_tabs.index(self.file_tabs.select()))]
 
     def flash_file(self, event=None):
-        from tiborcim.tibc import flash
+        from tiborcim.tibc import flash_file as flash
         from tiborcim.tibc import TibcStatus as status
         self.current_file().convert_file()
         result = flash(self.current_file().filename + '.py')

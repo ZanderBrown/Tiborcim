@@ -1,5 +1,9 @@
+' Turn the radio on
 RADIO ON
+' Send a message
 BROADCAST "Hi"
+' Recive a message and check what it is
 IF RECEIVE$ = "Hi" THEN
+	' Send another message
 	BROADCAST "Hi"
 END IF

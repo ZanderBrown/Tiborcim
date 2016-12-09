@@ -1,6 +1,10 @@
+' Repeate forever
 WHILE 1
+	' if the device was shaken
 	IF SHAKEN THEN
+		' generate a random number between 1 & 6
 		num = INT(RND * 6 + 1)
+		' Show the number
 		SHOW STR$(num)
-	ENDIF
+	END IF
 WEND
