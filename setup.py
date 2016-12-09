@@ -9,9 +9,9 @@ for file in os.listdir("samples"):
     if file.endswith(".tibas"):
         samples.append('samples/' + file)
 
-data = [('samples', samples), ('', ['README.md'])]
-if 'nt' not in os.name:
-    data += [('/usr/share/pixmaps', ['conf/cim.png', ]),
+data = [('samples', samples), ('', ['README.md', 'cim.png'])]
+if 'posix' in os.name:
+    data += [('/usr/share/pixmaps', ['cim.png', ]),
                 ('/usr/share/applications', ['conf/cim.desktop', ])]
 
 setup(

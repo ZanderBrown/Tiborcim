@@ -1,30 +1,36 @@
-repeat = 0
+' Used to track if we are lightening
+' or darkening the display
 direction = 0
-WHILE repeat < 300
-	a = 0
-	WHILE a < 5
-		b = 0
-		WHILE b < 5
+' Go forever
+WHILE 1
+	' Loop over each col of display
+	FOR a = 0 TO 4
+		' Loop over each row of col
+		FOR b = 0 TO 4
+			' Get the current value
 			current = SCREEN (a , b)
 			IF direction = 0 THEN
+				' If lightening do that
 				new = (current + 1)
 			ELSE
+				' Else darken it
 				new = (current - 1)
 			END IF
+			' If we have gone above 9
+			' (the maximum brightness)
 			IF new > 9  THEN
+				' say we are now decreasing
+				' brighness
 				direction = 1
 			ELSEIF new < 0  THEN
+				' If it now compleatly off
+				' start brightening
 				direction = 0
 			ELSE
+				' Set the new brightness
 				PSET a, b, new
 			END IF
-			b = b + 1
-		WEND
-		a = a + 1
-	WEND
-	repeat = repeat + 1
+		NEXT b
+	NEXT a
+	SLEEP .1
 WEND
-PYTHON
-sleep(1000)
-END PYTHON
-PRINT INKEY ()

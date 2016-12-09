@@ -11,7 +11,7 @@ class TiborcimSyntaxError(Exception):
     def __init__(self, text):
         super(text)
 
-_VERSION = (0, 1, 5, "BETA")
+_VERSION = (0, 1, 7, "BETA")
 
 def get_version():
     return '.'.join([str(i) for i in _VERSION])
@@ -299,14 +299,18 @@ class compiler:
             print(line)
             self.file_output.write(line)
 
-def flash(file, path = None):
+def flash_file (file, path = None):
+    # Load File contents
+    f = open(file, "r")
+    script = f.read()
+    f.close()
+    return flash(script, path)
+
+def flash(script, path = None):
     import tiborcim.contrib.uflash as uflash, os
 
     # Make a hex
     try:
-        # Load File contents
-        f = open(file, "r")
-        script = f.read()
         # Actually hex it
         python_hex = uflash.hexlify(script.encode('utf-8'))
     except:
@@ -355,7 +359,7 @@ def run():
         if args.python is False:
             compiler(args.source)
             args.source += '.py'
-        flash(args.source, args.target)
+        flash_file(args.source, args.target)
     except Exception as ex:
         # The exception of no return. Print the exception information.
         print(ex)

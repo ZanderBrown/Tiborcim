@@ -1,3 +1,8 @@
+' A rough drawing of Tiborcim's logo
+' Demonstrates the LED state settting routines
+' This could be implemented with IMAGE but this
+' demo predates the IMAGE statement
+
 ' Main (brightest) image
 ' Top Row
 PSET 0, 0, 9
