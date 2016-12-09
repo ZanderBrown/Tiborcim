@@ -1,10 +1,18 @@
+' Define a subroutine called 'Test'
 SUB Test
+	' Print 'hi' on the led's
 	PRINT "Hi"
 END SUB
 
+' Define a subroutine taking the parameter of 'test'
 SUB Other(test)
+	' Display the value of test
 	PRINT test
 END SUB
 
+' Run Test
 Test()
+' Run Other with the argument "Again"
 Other("Again")
+
+' The user should see "Hi Again" on screen 

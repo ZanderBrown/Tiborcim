@@ -1,5 +1,12 @@
 #! /usr/bin/env python3
 
+"""
+Part of Tiborcim
+https://github.com/ZanderBrown/Tiborcim
+
+(C) Alexander Brown 2016
+"""
+
 from tkinter.ttk import Frame, Button, Notebook, Scrollbar, Style
 from tkinter.filedialog import askopenfilename, asksaveasfile
 from tkinter.messagebox import showerror, showinfo, askokcancel
@@ -7,11 +14,12 @@ from tkinter import Toplevel, Menu, Text, StringVar, IntVar, PhotoImage
 from tkinter import DISABLED, NORMAL, END, RIGHT, Y, X, BOTTOM, HORIZONTAL, NONE
 from os import sep, altsep
 from os.path import join, abspath, dirname
+import tiborcim.resources
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
-ICON_PNG = join(abspath(dirname(__file__)), "icon.png")
-README_PATH = join(abspath(dirname(__file__)), "readme.md")
+ICON_PNG = tiborcim.resources.icon_path()
+README_PATH = tiborcim.resources.readme_path()
 
 class CimReadme(Toplevel):
     def __init__(self, parent):
@@ -59,15 +67,15 @@ class CimAbout(Toplevel):
                         parent.winfo_rooty()+30))
         from tkinter import Frame, Label
         from sys import version
-        from uflash import get_version as uflash_version
-        from tibc import get_version as tibc_version
+        from tiborcim.contrib.uflash import get_version as uflash_version
+        from tiborcim.tibc import get_version as tibc_version
 
         self.bg = "#bbbbbb"
         self.fg = "#000000"
         
         release = version[:version.index(' ')]
         logofn = ICON_PNG
-        self.picture = PhotoImage(master=self._root(), file=logofn)
+        self.picture = PhotoImage(master=self._root(), file=logofn, width=64, height=64)
         self.frameBg = frameBg = Frame(self, bg=self.bg, borderwidth=0)
         frameBg.grid(sticky='nsew')
         label_title = Label(frameBg, text='Cim', fg=self.fg, bg=self.bg,
@@ -248,7 +256,7 @@ class CimFilePage(Notebook):
             f.close() 
 
     def convert_file(self):
-        from tibc import compiler as tibc
+        from tiborcim.tibc import compiler as tibc
         # Should warn if unsaved...
         self.save_file()
         tibc(self.filename)
@@ -322,58 +330,98 @@ class CimApp(Frame):
         self.menubar = Menu(self.master)
         self.fileMenu = Menu(self.master, tearoff=0)
         self.fileMenu.add_command(label="New", command=self.new_file,
-                                  underline=1, accelerator="Ctrl+N")
+                                  underline=0, accelerator="Ctrl+N")
         self.fileMenu.add_command(label="Open...", command=self.load_file,
-                                  underline=1, accelerator="Ctrl+O")
+                                  underline=0, accelerator="Ctrl+O")
         self.fileMenu.add_command(label="Save", command=self.file_save,
-                                  underline=1, accelerator="Ctrl+S")
+                                  underline=0, accelerator="Ctrl+S")
         self.fileMenu.add_command(label="Save As...", command=self.file_save_as,
-                                  underline=1, accelerator="Ctrl+Alt+S")
+                                  underline=5, accelerator="Ctrl+Alt+S")
         self.fileMenu.add_command(label="Close", command=self.close_file,
-                                  underline=1, accelerator="Ctrl+W")
+                                  underline=0, accelerator="Ctrl+W")
         self.fileMenu.add_separator()
         self.fileMenu.add_command(label="Exit", command=self.file_quit, underline=1)
-        self.menubar.add_cascade(label="File", menu=self.fileMenu, underline=1)
+        self.menubar.add_cascade(label="File", menu=self.fileMenu, underline=0)
 
         self.edit_program = Menu(self.master, tearoff=0)
         self.edit_program.add_command(label="Undo", command=self.edit_undo,
-                                  underline=1, accelerator="Ctrl+Z")
+                                  underline=0, accelerator="Ctrl+Z")
         self.edit_program.add_command(label="Redo", command=self.edit_redo,
-                                      underline=1, accelerator="Ctrl+Y")
+                                      underline=0, accelerator="Ctrl+Y")
         self.edit_program.add_separator()
-        self.edit_program.add_command(label="Cut", command=self.edit_cut,
-                                      underline=1, accelerator="Ctrl+X")
-        self.edit_program.add_command(label="Copy", command=self.edit_copy,
-                                      underline=1, accelerator="Ctrl+C")
-        self.edit_program.add_command(label="Paste", command=self.edit_paste,
-                                      underline=1, accelerator="Ctrl+V")
-        self.menubar.add_cascade(label="Edit", menu=self.edit_program, underline=1)
+        self.edit_program.add_command(label="Cut",
+                                      command=self.edit_cut,
+                                      underline=2,
+                                      accelerator="Ctrl+X")
+        self.edit_program.add_command(label="Copy",
+                                      command=self.edit_copy,
+                                      underline=0,
+                                      accelerator="Ctrl+C")
+        self.edit_program.add_command(label="Paste",
+                                      command=self.edit_paste,
+                                      underline=0,
+                                      accelerator="Ctrl+V")
+        self.menubar.add_cascade(label="Edit", menu=self.edit_program, underline=0)
 
         self.menu_program = Menu(self.master, tearoff=0)
-        self.menu_program.add_command(label="Convert", command=self.convert_file,
-                                  underline=1, accelerator="Ctrl+T")
-        self.menu_program.add_command(label="Flash", command=self.flash_file,
-                                      underline=1, accelerator="Ctrl+B")
+        self.menu_program.add_command(label="Convert",
+                                      command=self.convert_file,
+                                      underline=0,
+                                      accelerator="Ctrl+T")
+        self.menu_program.add_command(label="Flash",
+                                      command=self.flash_file,
+                                      underline=0,
+                                      accelerator="Ctrl+B")
         self.menu_program.add_separator()
-        self.menubar.add_cascade(label="Program", menu=self.menu_program, underline=1)
+        self.menubar.add_cascade(label="Program", menu=self.menu_program, underline=0)
 
-        self.menu_view = Menu(self.master, tearoff=0)
+        self.menu_view = Menu(self.master,
+                              tearoff=0)
         self.viewmode = StringVar()
         self.viewmode.set("tiborcim")
-        self.menu_view.add_radiobutton(label="Tiborcim", command=self.view_tiborcim,
-                                       variable=self.viewmode, value="tiborcim")
-        self.menu_view.add_radiobutton(label="Python", command=self.view_python,
-                                       variable=self.viewmode, value="python")
-        self.menubar.add_cascade(label="View", menu=self.menu_view, underline=1)
+        self.menu_view.add_radiobutton(label="Tiborcim",
+                                       command=self.view_tiborcim,
+                                       variable=self.viewmode,
+                                       value="tiborcim",
+                                       underline=0)
+        self.menu_view.add_radiobutton(label="Python",
+                                       command=self.view_python,
+                                       variable=self.viewmode,
+                                       value="python",
+                                       underline=0)
+        self.menubar.add_cascade(label="View",
+                                 menu=self.menu_view,
+                                 underline=0)
 
-        self.menu_help = Menu(self.master, tearoff=0)
-        self.menu_help.add_command(label="README", command=self.help_readme,
-                                  underline=1)
-        self.menu_help.add_command(label="About", command=self.help_about,
-                                  underline=1)
-        self.menubar.add_cascade(label="Help", menu=self.menu_help, underline=1)
+        self.menu_help = Menu(self.master,
+                              tearoff=0)
+        
+        self.menu_samples = Menu(self.master, tearoff=0)
+        samples = tiborcim.resources.samples_list()
+        def add_sample (sample):
+            self.menu_samples.add_command(label=sample,
+                                          command=lambda: self.help_sample(sample))
+        for sample in samples:
+            add_sample(sample)
+    
+        self.menu_help.add_cascade(label="Samples",
+                                   menu=self.menu_samples,
+                                   underline=0)
+        self.menu_help.add_separator()
+        self.menu_help.add_command(label="README",
+                                   command=self.help_readme,
+                                   underline=0)
+        self.menu_help.add_separator()
+        self.menu_help.add_command(label="About",
+                                   command=self.help_about,
+                                   underline=0)
+        self.menubar.add_cascade(label="Help",
+                                 menu=self.menu_help,
+                                 underline=0)
 
-        self.master.config(width=450, height=400, menu=self.menubar)
+        self.master.config(width=450,
+                           height=400,
+                           menu=self.menubar)
 
         self.bind_all("<Control-o>", self.load_file)
         self.bind_all("<Control-s>", self.file_save)
@@ -459,8 +507,8 @@ class CimApp(Frame):
         return self.files[int(self.file_tabs.index(self.file_tabs.select()))]
 
     def flash_file(self, event=None):
-        from tibc import flash
-        from tibc import TibcStatus as status
+        from tiborcim.tibc import flash_file as flash
+        from tiborcim.tibc import TibcStatus as status
         self.current_file().convert_file()
         result = flash(self.current_file().filename + '.py')
         if result is status.SUCCESS:
@@ -496,6 +544,15 @@ class CimApp(Frame):
     def help_readme(self, event=None):
         CimReadme.show(self)
 
+    def help_sample(self, sam):
+        print(sam)
+        filepage = CimFilePage(self.file_tabs)
+        filepage.load_file(tiborcim.resources.sample_path(sam))
+        filepage.filename = None
+        self.file_tabs.add(filepage, text="Unsaved Program")
+        self.files.append(filepage)
+        self.file_tabs.select(filepage)
+
     def file_quit(self, event=None):
         for ndx, member in enumerate(self.files):
             logging.debug(self.files[ndx].saved)
@@ -505,12 +562,12 @@ class CimApp(Frame):
         self.quit()
 
 _HELP_TEXT = """
-Tiborcim - GUI for Tibc the TIBORCIM compiler\n
+Cim - GUI for Tibc, the TIBORCIM compiler\n
  (C) Copyright Alexander Brown 2016\r\n
 """
 
 
-if __name__ == "__main__":
+def run():
     import argparse, sys
     argv = sys.argv[1:]
     try:
@@ -519,3 +576,6 @@ if __name__ == "__main__":
         CimApp().mainloop()
     except Exception as ex:
         logging.debug(ex)
+
+if __name__ == "__main__":
+    run()

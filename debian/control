@@ -1,0 +1,11 @@
+Source: tiborcim
+Maintainer: Zander Brown
+Section: python
+Priority: optional
+Build-Depends: python3-setuptools, python3, debhelper (>= 9)
+Standards-Version: 3.9.1
+
+Package: tiborcim
+Architecture: all
+Depends: ${misc:Depends}, ${python3:Depends}, python3-setuptools
+Description: Tiborcim is an cross/transpiler providing a BASIC like language for use with the Micro:Bit. Inculded in the tibc compiler and the Cim editor

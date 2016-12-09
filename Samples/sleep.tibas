@@ -1,3 +1,6 @@
+' Show the number 1
 SHOW 1
+' Wait for 1 second
 SLEEP 1
+' Show a new image
 IMAGE "00100:99999:10001:99999:00100"

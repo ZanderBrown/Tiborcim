@@ -1,1 +1,2 @@
-PRINT "Hi"
+' The classic hello world
+PRINT "Hello, World!"

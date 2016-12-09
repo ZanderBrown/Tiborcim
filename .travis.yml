@@ -1,0 +1,36 @@
+language: python3
+
+# Travis can be used to build for both Linux and OS X
+os:
+  - linux
+
+# Ensure we are running on 14.04 instead of 12.04 on the Ubuntu side
+sudo: required
+dist: trusty
+
+before_install:
+  # OS extra info
+  - uname -a
+  - python --version
+  - python -c "import struct; print(struct.calcsize('P') * 8)"
+
+  # Check everything was correctly installed (linux python path from sudo env)
+  - echo $PATH
+  - sudo echo $PATH
+  - sudo python3 --version
+  - sudo python3 -c "import struct; print(struct.calcsize('P') * 8)"
+  - sudo python3 -m pip --version
+  - pyinstaller --version
+
+# Build Tiborcim and time stamp it
+install:
+  - sudo pip3 install -r requirements.txt
+
+# Run the test suit and build the executable with the time stamp in its file name
+script:
+  - pyinstaller package/pyinstaller.spec
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
