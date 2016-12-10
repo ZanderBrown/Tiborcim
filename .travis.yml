@@ -15,7 +15,7 @@ cache: pip
 sudo: required
 dist: trusty
 
-before_install:
+install:
   # OS extra info
   - uname -a
   - python --version
@@ -27,10 +27,8 @@ before_install:
   - sudo python --version
   - sudo python -c "import struct; print(struct.calcsize('P') * 8)"
   - sudo pip --version
-  - pyinstaller --version
-
-install:
   - pip install -r requirements.txt
+  - pyinstaller --version
 
 # Run the test suit and build the executable with the time stamp in its file name
 script:
