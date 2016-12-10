@@ -21,6 +21,7 @@ def compile_file (file):
 
 class compiler:
     def __init__(self, script):
+        import tiborcim.lang
         import re
         self.content = script.split('\n')
 
