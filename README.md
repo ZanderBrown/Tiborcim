@@ -1,4 +1,7 @@
+![Logo](cim.png "Tiborcim Logo")
+
 # Tiborcim
+[![Build Status](https://travis-ci.org/ZanderBrown/Tiborcim.svg?branch=master)](https://travis-ci.org/ZanderBrown/Tiborcim)
 BASIC for the Micro:Bit
 
 The plan is to a create a source to source (or trans-)complier to take Tiborcim a custom language with syntax as close to BBC BASIC as possible and generate MicroPython code for the BBC Micro:Bit
