@@ -258,13 +258,11 @@ class CimFilePage(Notebook):
     def convert_file(self):
         from tiborcim.tibc import compiler as tibc
         # Should warn if unsaved...
-        self.save_file()
-        tibc(self.filename)
+        com = tibc(self.text_tiborcim.get("1.0", "end"))
         try:
-            f = open(self.filename + '.py')
             self.text_python.config(state="normal")
             self.text_python.delete("1.0", "end")
-            self.text_python.insert("end", f.read())
+            self.text_python.insert("end", ''.join(com.output))
             self.text_python.config(state="disabled")
         except:
             logging.warning("That's Odd")
@@ -508,14 +506,15 @@ class CimApp(Frame):
         return self.files[int(self.file_tabs.index(self.file_tabs.select()))]
 
     def flash_file(self, event=None):
-        from tiborcim.tibc import flash_file as flash
+        from tiborcim.tibc import compiler as tibc
+        from tiborcim.tibc import flash
         from tiborcim.tibc import TibcStatus as status
-        self.current_file().convert_file()
-        result = flash(self.current_file().filename + '.py')
-        if result is status.SUCCESS:
+        com = tibc(self.current_file().text_tiborcim.get("1.0", "end"))
+        res = flash(''.join(com.output))
+        if res is status.SUCCESS:
             showinfo(title='Success', message='File Flashed', parent=self.master)
         else:
-            showerror(title='Failure', message='An Error Occured. Code: %s' % result, parent=self.master)
+            showerror(title='Failure', message='An Error Occured. Code: %s' % res, parent=self.master)
 
     def close_file(self, event=None):
         logging.debug("Close File")

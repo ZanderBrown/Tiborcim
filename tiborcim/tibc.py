@@ -14,13 +14,15 @@ _VERSION = (0, 1, 7, "BETA")
 def get_version():
     return '.'.join([str(i) for i in _VERSION])
 
+def compile_file (file):
+    with open(file, "r") as input_file:
+        com = compiler('\n'.join(input_file.readlines()))
+        return com
+
 class compiler:
-    def __init__(self, file, output = None):
+    def __init__(self, script):
         import re
-        self.file_input = open(file, "r")
-        self.output_file = output
-        self.filename = file
-        self.content = self.file_input.readlines()
+        self.content = script.split('\n')
 
         self.indent_level = 0
         self.tmp_vars = 0
@@ -272,7 +274,6 @@ class compiler:
                     self.print_output(line)
 
         self.store_output();
-        self.file_input.close()
     def print_output(self, text = ''):
         indents = ""
         for i in range(0, self.indent_level):
@@ -292,10 +293,8 @@ class compiler:
 
         for line in self.code:
             self.output.append(line)
-    def save_output(self):
-        if self.output_file is None:
-            self.output_file = self.filename + '.py'
-        with open(self.output_file, "w") as out:
+    def save_output(self, file):
+        with open(file, "w") as out:
             for line in self.output:
                 out.write(line)
 
@@ -359,9 +358,9 @@ def run():
                             help="Save output")
         args = parser.parse_args(argv)
         if args.python is False:
-            com = compiler(args.source)
+            com = compile_file(args.source)
             if args.save:
-                com.save_output()
+                com.save_output(args.source + '.py')
             print(com.output.join())
             args.source += '.py'
         flash(com.output.join(), args.target)
