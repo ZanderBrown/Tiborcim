@@ -32,7 +32,7 @@ install:
 
 # Run the test suit and build the executable with the time stamp in its file name
 script:
-  - pyinstaller package/pyinstaller.spec
+  - pyinstaller conf/cim.spec
 
 notifications:
   email:

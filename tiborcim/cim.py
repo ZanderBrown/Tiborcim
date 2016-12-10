@@ -566,7 +566,6 @@ Cim - GUI for Tibc, the TIBORCIM compiler\n
  (C) Copyright Alexander Brown 2016\r\n
 """
 
-
 def run():
     import argparse, sys
     argv = sys.argv[1:]
@@ -574,11 +573,11 @@ def run():
         parser = argparse.ArgumentParser(description=_HELP_TEXT)
         parser.add_argument('file', nargs='?', default=None, help="File to open")
         args = parser.parse_args(argv)
-        app = CimApp()
-        app.add_file(args.file)
-        app.mainloop()
     except Exception as ex:
         logging.debug(ex)
+    app = CimApp()
+    app.add_file(args.file)
+    app.mainloop()
 
 if __name__ == "__main__":
     run()
