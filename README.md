@@ -2,20 +2,33 @@
 
 # Tiborcim
 [![Build Status](https://travis-ci.org/ZanderBrown/Tiborcim.svg?branch=master)](https://travis-ci.org/ZanderBrown/Tiborcim)
+
 BASIC for the Micro:Bit
 
 The plan is to a create a source to source (or trans-)complier to take Tiborcim a custom language with syntax as close to BBC BASIC as possible and generate MicroPython code for the BBC Micro:Bit
 
-## Tibc.py
+Targeted and tested on Python 3.5
+
+## Install
+
+Tiborcim is packaged with python setup tools and can be installed with the command `python setup.py install` 
+
+## tibc
+Only accessable when Tiborcim is installed
+
 The 'compiler'. Why the name? cc, vbc, valac, tsc... sort of set a trend and tiborcimc was a bit long.
 
 ### Usage
-`tibc.py [-h] [-p] [source] [target]`
+`tibc [-h] [-p] [source] [target]`
 
 where -h prints help, -p for flashing a file that is already python, source being the file name and source being the location of your Micro:Bit (only needed if it's not found)
 
-## Tiborcim.py
-A simple editor
+## Cim
+A simple editor for Tiborcim
+
+When Tiborcim is installed Cim can be accesed with the command `cim` or linux user can find it in the applications menu
+
+If you have choosen not to install Tiborcim you can still access Cim by executing `run.py`
 
 ### Usage
 The main window consists of a menu bar and two tabs
@@ -157,14 +170,13 @@ END SUB
 test()
 ```
 
-#### Planned
-| Function        | Does                                                                                            |
-| --------------- | ------------------------------                                                                  |
-| FOR             | Iterate through number in order                                                                 |
+#### FOR .. NEXT
+
+// TODO: explain
 
 
 ## What is it written in?
-The 'compiler' and sample DE (I would say IDE but it isn't) are written in Python3. I am to be as Pythonic a possible.
+The 'compiler' and sample DE (I would say IDE but it isn't) are written in Python 3. I aim to be as Pythonic a possible.
 
 ### Dependencies
 The goal is to have a few dependencies as possible outside the package itself hence our current editor uses Tkinter although a GTK3 (PyGObject) environment is planned as an optional extra.
@@ -176,8 +188,7 @@ Write it backwards.
 Imaginative I know. Other name's were considered but just didn't feel right
 
 ### How do you say that?!
-Tib - or - kim is how I say it aloud.
-
+`Tib - or - kim` is how I say it aloud. I'm aware that is not how it's written but as the author i retain the right to be akward with my naming
 
 ## Notes
 GitHub shows commits at weird times. unfortunately this occurred through a combination of a incorrectly set clock and a corrupted `.git` directory. long story short some commits show twice, some not at all & others at 1 o'clock in the morning for no apparent reason.
