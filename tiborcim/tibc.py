@@ -1,8 +1,6 @@
 #! /usr/bin/env python3
 
-from enum import Enum
-
-class TibcStatus(Enum):
+class TibcStatus():
     HEX_GEN_ERROR = 1
     NOT_FOUND = 2
     SUCCESS = 3
@@ -16,14 +14,15 @@ _VERSION = (0, 1, 7, "BETA")
 def get_version():
     return '.'.join([str(i) for i in _VERSION])
 
+def compile_file (file):
+    with open(file, "r") as input_file:
+        com = compiler('\n'.join(input_file.readlines()))
+        return com
+
 class compiler:
-    def __init__(self, file, output = None):
+    def __init__(self, script):
         import re
-        self.file_input = open(file, "r")
-        if output is None:
-            output = file + '.py'
-        self.file_output = open(output, "w")
-        self.content = self.file_input.readlines()
+        self.content = script.split('\n')
 
         self.indent_level = 0
         self.tmp_vars = 0
@@ -274,9 +273,7 @@ class compiler:
                 else:
                     self.print_output(line)
 
-        self.save_output();
-        self.file_input.close()
-        self.file_output.close()
+        self.store_output();
     def print_output(self, text = ''):
         indents = ""
         for i in range(0, self.indent_level):
@@ -285,19 +282,21 @@ class compiler:
             self.code_header.append(indents + text + "\n")
         else:
             self.code.append(indents + text + "\n")
-    def save_output(self):
+    def store_output(self):
+        self.output = []
         for line in self.code_header:
-            print(line)
-            self.file_output.write(line)
+            self.output.append(line)
 
         if self.code_input_used:
             for line in self.code_input:
-                print(line)
-                self.file_output.write(line)
+                self.output.append(line)
 
         for line in self.code:
-            print(line)
-            self.file_output.write(line)
+            self.output.append(line)
+    def save_output(self, file):
+        with open(file, "w") as out:
+            for line in self.output:
+                out.write(line)
 
 def flash_file (file, path = None):
     # Load File contents
@@ -355,11 +354,16 @@ def run():
         parser.add_argument('target', nargs='?', default=None, help="Path to Micro:Bit for when multiple are connected or not found")
         parser.add_argument('-p', '--python', default=False, action='store_true',
                             help="File is already Python.")
+        parser.add_argument('-s', '--save', default=False, action='store_true',
+                            help="Save output")
         args = parser.parse_args(argv)
         if args.python is False:
-            compiler(args.source)
+            com = compile_file(args.source)
+            if args.save:
+                com.save_output(args.source + '.py')
+            print(com.output.join())
             args.source += '.py'
-        flash_file(args.source, args.target)
+        flash(com.output.join(), args.target)
     except Exception as ex:
         # The exception of no return. Print the exception information.
         print(ex)
