@@ -24,6 +24,10 @@ install:
   # Check everything was correctly installed (linux python path from sudo env)
   - echo $PATH
   - sudo echo $PATH
+  - echo "Checkout contents"
+  - ls
+  - echo "Samples Avalible"
+  - ls samples
   - sudo python --version
   - sudo python -c "import struct; print(struct.calcsize('P') * 8)"
   - sudo pip --version
