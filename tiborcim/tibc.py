@@ -20,9 +20,8 @@ class compiler:
     def __init__(self, file, output = None):
         import re
         self.file_input = open(file, "r")
-        if output is None:
-            output = file + '.py'
-        self.file_output = open(output, "w")
+        self.output_file = output
+        self.filename = file
         self.content = self.file_input.readlines()
 
         self.indent_level = 0
@@ -274,9 +273,8 @@ class compiler:
                 else:
                     self.print_output(line)
 
-        self.save_output();
+        self.store_output();
         self.file_input.close()
-        self.file_output.close()
     def print_output(self, text = ''):
         indents = ""
         for i in range(0, self.indent_level):
@@ -285,19 +283,23 @@ class compiler:
             self.code_header.append(indents + text + "\n")
         else:
             self.code.append(indents + text + "\n")
-    def save_output(self):
+    def store_output(self):
+        self.output = []
         for line in self.code_header:
-            print(line)
-            self.file_output.write(line)
+            self.output.append(line)
 
         if self.code_input_used:
             for line in self.code_input:
-                print(line)
-                self.file_output.write(line)
+                self.output.append(line)
 
         for line in self.code:
-            print(line)
-            self.file_output.write(line)
+            self.output.append(line)
+    def save_output(self):
+        if self.output_file is None:
+            self.output_file = self.filename + '.py'
+        with open(self.output_file, "w") as out:
+            for line in self.output:
+                out.write(line)
 
 def flash_file (file, path = None):
     # Load File contents
@@ -355,11 +357,16 @@ def run():
         parser.add_argument('target', nargs='?', default=None, help="Path to Micro:Bit for when multiple are connected or not found")
         parser.add_argument('-p', '--python', default=False, action='store_true',
                             help="File is already Python.")
+        parser.add_argument('-s', '--save', default=False, action='store_true',
+                            help="Save output")
         args = parser.parse_args(argv)
         if args.python is False:
-            compiler(args.source)
+            com = compiler(args.source)
+            if args.save:
+                com.save_output()
+            print(com.output.join())
             args.source += '.py'
-        flash_file(args.source, args.target)
+        flash(com.output.join(), args.target)
     except Exception as ex:
         # The exception of no return. Print the exception information.
         print(ex)

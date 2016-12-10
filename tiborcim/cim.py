@@ -572,6 +572,7 @@ def run():
     argv = sys.argv[1:]
     try:
         parser = argparse.ArgumentParser(description=_HELP_TEXT)
+        parser.add_argument('file', nargs='?', default=None, help="File to open")
         args = parser.parse_args(argv)
         CimApp().mainloop()
     except Exception as ex:
