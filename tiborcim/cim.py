@@ -436,6 +436,9 @@ class CimApp(Frame):
         self.file_tabs.pack(expand=1, fill="both")
 
     def file_changed(self, event):
+        if len(self.file_tabs.tabs()) <= 0:
+            self.add_file()
+            return
         title = str(event.widget.tab(event.widget.index("current"),"text")).upper().strip()
         self.menu_program.delete(3, END)
         for tab in self.file_tabs.tabs():
