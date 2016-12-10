@@ -3,10 +3,10 @@
 block_cipher = None
 
 
-a = Analysis(['run.py'],
-             pathex=['C:\\Users\\ajhb2\\Documents\\Tiborcim'],
+a = Analysis(['../run.py'],
+             pathex=['../'],
              binaries=None,
-             datas=[ ('README.md', '.'), ('cim.png', '.'), ('samples/*.tibas', 'samples') ],
+             datas=[ ('../README.md', '.'), ('../cim.png', '.'), ('../samples/*.tibas', 'samples') ],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
