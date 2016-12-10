@@ -4,3 +4,4 @@ pyflakes
 coverage
 pytest-cov
 setuptools==19.2
+pyinstaller
