@@ -435,8 +435,6 @@ class CimApp(Frame):
         self.file_tabs.bind_all("<<NotebookTabChanged>>", self.file_changed)
         self.file_tabs.pack(expand=1, fill="both")
 
-        self.add_file()
-
     def file_changed(self, event):
         title = str(event.widget.tab(event.widget.index("current"),"text")).upper().strip()
         self.menu_program.delete(3, END)
@@ -574,7 +572,9 @@ def run():
         parser = argparse.ArgumentParser(description=_HELP_TEXT)
         parser.add_argument('file', nargs='?', default=None, help="File to open")
         args = parser.parse_args(argv)
-        CimApp().mainloop()
+        app = CimApp()
+        app.add_file(args.file)
+        app.mainloop()
     except Exception as ex:
         logging.debug(ex)
 

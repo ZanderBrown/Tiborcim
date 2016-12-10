@@ -1,8 +1,6 @@
 #! /usr/bin/env python3
 
-from enum import Enum
-
-class TibcStatus(Enum):
+class TibcStatus():
     HEX_GEN_ERROR = 1
     NOT_FOUND = 2
     SUCCESS = 3
