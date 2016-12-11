@@ -164,12 +164,12 @@ class CimTiborcimText(Text):
             ]
             strings = [
                 "\"(.*?)\"",
-                "'(.*?)'"
             ]
             self.tag_remove('builtin', '1.0', 'end')
             self.tag_remove('keyword', '1.0', 'end')
             self.tag_remove('string', '1.0', 'end')
             self.tag_remove('block', '1.0', 'end')
+            self.tag_remove('comment', '1.0', 'end')
             for builtin in builtins:
                 self.highlight_pattern("\y" + builtin + "\y(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "builtin", '1.0', 'end', True)
             for builtinvar in builtinvars:
@@ -180,7 +180,7 @@ class CimTiborcimText(Text):
                 self.highlight_pattern(string + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "string", '1.0', 'end', True)
             for block in blocks:
                 self.highlight_pattern("\y" + block + "\y(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "block", '1.0', 'end', True)
-            self.highlight_pattern("^\'(.*?)$", "comment", '1.0', 'end', True)
+            self.highlight_pattern("\'(.*?)$", "comment", '1.0', 'end', True)
             self.edit_modified(False)
 
         self.bind('<<Modified>>', text_changed)
