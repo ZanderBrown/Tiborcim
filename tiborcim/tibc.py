@@ -62,6 +62,7 @@ class compiler:
         for line in self.content:
             stripedline = line.strip()
             if self.python_block is False:
+                stripedline = re.sub(r'(\'.*$)', '', stripedline)
                 for builtin in builtins.BUILTINS:
                     stripedline = builtin.run(stripedline)
                     print (stripedline)
@@ -69,8 +70,9 @@ class compiler:
                 # INKEY
                 if re.search("INKEY\$(?=([^\"]*\"[^\"]*\")*[^\"]*$)", stripedline) is not None:
                     self.code_input_used = True
-                line = re.sub("INKEY\$(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "read_keys()", stripedline)
+                stripedline = re.sub("INKEY\$(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "read_keys()", stripedline)
 
+                """
                 # SCREEN
                 line = re.sub("SCREEN(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "display.get_pixel", stripedline)
 
@@ -79,6 +81,7 @@ class compiler:
 
                 # INT
                 line = re.sub("(?<!PR)INT(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "int", stripedline)
+                """
 
                 # RECEIVE$
                 m = re.search('(?:^RECEIVE\$(?=([^\"]*\"[^\"]*\")*[^\"]*$))', stripedline)
@@ -86,15 +89,16 @@ class compiler:
                     if not self.radio_imported:
                         self.code_header.append('import radio' + "\n")
                         self.radio_imported = True
-                line = re.sub("RECEIVE\$(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "radio.receive()", stripedline)
+                stripedline = re.sub("RECEIVE\$(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "radio.receive()", stripedline)
 
                 # RND
                 if re.search("RND(?=([^\"]*\"[^\"]*\")*[^\"]*$)", stripedline) is not None:
                     if not self.random_imported:
                         self.code_header.append('import random' + "\n")
                         self.random_imported = True
-                line = re.sub("RND(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "random.random()", stripedline)
+                stripedline = re.sub("RND(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "random.random()", stripedline)
 
+                """
                 # SCREEN
                 line = re.sub("SHAKEN(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "accelerometer.was_gesture(\"shake\")", stripedline)
 
@@ -102,7 +106,7 @@ class compiler:
                 if re.search(self.regexs['NOT'], stripedline) is not None:
                     self.print_output(re.sub(self.regexs['NOT'], '!', stripedline))
                     continue
-
+                
                 # AND
                 if re.search(self.regexs['AND'], stripedline) is not None:
                     self.print_output(re.sub(self.regexs['AND'], 'and', stripedline))
@@ -113,7 +117,6 @@ class compiler:
                     self.print_output(re.sub(self.regexs['OR'], 'or', stripedline))
                     continue
 
-                """
                 # PRINT
                 if re.search(self.regexs['PRINT'], stripedline) is not None:
                     # Wrap the argument in str() because display.scroll only accepts strings
@@ -141,6 +144,7 @@ class compiler:
                         self.print_output('radio.off()')
                     continue
 
+                """
                 # SHOW
                 m = re.search('(?:^SHOW)', stripedline)
                 if m is not None:
@@ -160,6 +164,7 @@ class compiler:
                     # Multiply the argument by 1000 to convert to miliseconds
                     self.print_output('sleep((' + stripedline[5:].strip() + ')*1000)')
                     continue
+                """
 
                 # SUB
                 m = re.search('(?:^SUB) (\w+)', stripedline)
@@ -178,7 +183,6 @@ class compiler:
                 m = re.search('(?:^END SUB)', stripedline)
                 if m is not None:
                     self.function_block = False
-                    self.print_output('')
                     self.indent_level = self.indent_level_old
                     continue
 
@@ -198,7 +202,6 @@ class compiler:
                 m = re.search('(?:^IF)', stripedline)
                 if m is not None:
                     line = re.sub('=', ' == ', stripedline)
-                    self.print_output()
                     self.print_output('if (' + str.strip(stripedline[2:-5]) + '):')
                     self.indent_level += 1
                     continue
@@ -208,16 +211,17 @@ class compiler:
                 if m is not None:
                     line = re.sub('=', ' == ', stripedline)
                     self.indent_level -= 1
-                    self.print_output()
                     self.print_output('elif (' + str.strip(stripedline[6:-5]) + '):')
                     self.indent_level += 1
                     continue
 
+                """
                 # Comment
                 m = re.search('(?:^\')', stripedline)
                 if m is not None:
                     self.print_output('#' + stripedline)
                     continue
+                """
 
                 # END IF
                 m = re.search('(?:^END IF)', stripedline)

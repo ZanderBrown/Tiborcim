@@ -23,12 +23,12 @@ class Item:
         regex += self.name
         if self.inline:
             if self.argcount > 0:
-                regex += r'\b\(\W?([^,]s*)\W?'
+                regex += r'\b\(\W?([^,]*)\W?'
                 for x in range(1, self.argcount):
                     regex += ',\W?([^,]*)\W?'
-                regex += r'\)\b'
+                regex += r'\)(?=([^\"]*\"[^\"]*\")*[^\"]*$)'
             else:
-                regex += r'\b'
+                regex += r'\b(?=([^\"]*\"[^\"]*\")*[^\"]*$)'
         elif not self.inline:
             if self.argcount > 0:
                 regex += r'\b\W?([^,]*)\W?'
@@ -36,5 +36,6 @@ class Item:
                     regex += ',\W?([^,]*)\W?'
             else:
                 regex += r'\b'
+        print (regex)
         line = re.sub(regex, self.replacement, line)
         return line
