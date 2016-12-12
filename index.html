@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <title>Tiborcim by ZanderBrown</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Tiborcim</h1>
+        <h2>BASIC for the Micro:Bit</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/ZanderBrown/Tiborcim/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/ZanderBrown/Tiborcim/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/ZanderBrown/Tiborcim" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <p><img src="cim.png" alt="Logo" title="Tiborcim Logo"></p>
+
+<h1>
+<a id="tiborcim" class="anchor" href="#tiborcim" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Tiborcim</h1>
+
+<p><a href="https://travis-ci.org/ZanderBrown/Tiborcim"><img src="https://travis-ci.org/ZanderBrown/Tiborcim.svg?branch=master" alt="Build Status"></a></p>
+
+<p>BASIC for the Micro:Bit</p>
+
+<p>The plan is to a create a source to source (or trans-)complier to take Tiborcim a custom language with syntax as close to BBC BASIC as possible and generate MicroPython code for the BBC Micro:Bit</p>
+
+<p>Targeted and tested on Python 3.5</p>
+
+<h2>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install</h2>
+
+<p>Tiborcim is packaged with python setup tools and can be installed with the command <code>python setup.py install</code> </p>
+
+<h2>
+<a id="tibc" class="anchor" href="#tibc" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>tibc</h2>
+
+<p>Only accessable when Tiborcim is installed</p>
+
+<p>The 'compiler'. Why the name? cc, vbc, valac, tsc... sort of set a trend and tiborcimc was a bit long.</p>
+
+<h3>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h3>
+
+<p><code>tibc [-h] [-p] [source] [target]</code></p>
+
+<p>where -h prints help, -p for flashing a file that is already python, source being the file name and source being the location of your Micro:Bit (only needed if it's not found)</p>
+
+<h2>
+<a id="cim" class="anchor" href="#cim" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Cim</h2>
+
+<p>A simple editor for Tiborcim</p>
+
+<p>When Tiborcim is installed Cim can be accesed with the command <code>cim</code> or linux user can find it in the applications menu</p>
+
+<p>If you have choosen not to install Tiborcim you can still access Cim by executing <code>run.py</code></p>
+
+<h3>
+<a id="usage-1" class="anchor" href="#usage-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h3>
+
+<p>The main window consists of a menu bar and two tabs
+the first tabs is for Tiborcim source where as the second shows the generated MicroPython source
+The menu-bar provide standard controls for managing file and options to flash the code</p>
+
+<h2>
+<a id="language" class="anchor" href="#language" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Language</h2>
+
+<h3>
+<a id="hello-world" class="anchor" href="#hello-world" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Hello World</h3>
+
+<p>The Tiborcim</p>
+
+<pre><code>PRINT "Hello, World!"
+</code></pre>
+
+<p>represents the following MicroPython</p>
+
+<pre><code>from microbit import *
+
+display.scroll("Hello, World!")
+</code></pre>
+
+<p>no prizes for guessing what the Micro:Bit does...</p>
+
+<h3>
+<a id="current-tiborcim-statements" class="anchor" href="#current-tiborcim-statements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Current Tiborcim statements</h3>
+
+<h4>
+<a id="print" class="anchor" href="#print" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>PRINT</h4>
+
+<p>Equivalent to display.scroll()</p>
+
+<pre><code>PRINT "Some string"
+</code></pre>
+
+<h4>
+<a id="flow" class="anchor" href="#flow" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Flow</h4>
+
+<h5>
+<a id="if--elseif--else--end-if" class="anchor" href="#if--elseif--else--end-if" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IF .. ELSEIF .. ELSE .. END IF</h5>
+
+<p>Simple logic</p>
+
+<pre><code>IF (1 &lt; 10) THEN
+PRINT "1 is less than 10"
+ELSEIF (2 &lt; 5) THEN
+PRINT "1 is not less then 10 but 2 is less than 5"
+ELSE
+PRINT "You need to work on your Maths"
+END IF
+</code></pre>
+
+<h5>
+<a id="while--wend" class="anchor" href="#while--wend" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>WHILE .. WEND</h5>
+
+<p>Repeat code while condition is true</p>
+
+<pre><code>x = 0
+WHILE x &lt; 10
+    x = x + 1
+WEND
+</code></pre>
+
+<h4>
+<a id="pixels" class="anchor" href="#pixels" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Pixels</h4>
+
+<h5>
+<a id="screen" class="anchor" href="#screen" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>SCREEN</h5>
+
+<p>Returns the brightness of the pixel at x, y</p>
+
+<pre><code>PRINT SCREEN (x, y)
+</code></pre>
+
+<h5>
+<a id="pset" class="anchor" href="#pset" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>PSET</h5>
+
+<p>Sets the brightness of pixel x, y to z</p>
+
+<pre><code>PSET x, y, z
+</code></pre>
+
+<h4>
+<a id="buttons" class="anchor" href="#buttons" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Buttons</h4>
+
+<h5>
+<a id="inkey" class="anchor" href="#inkey" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>INKEY$</h5>
+
+<p>returns the current held button in the for of A, B or C with A &amp; B representing their corresponding buttons while C is A+B simultaneously
+if nothing is pressed '' is returned</p>
+
+<pre><code>WHILE 1
+    x = INKEY$
+    IF x = 'A' THEN
+        PRINT 'A'
+    ELSEIF x = 'B' THEN
+        PRINT 'B'
+    ELSEIF x = 'C' THEN
+        PRINT 'A+B'
+    END IF
+END WHILE
+</code></pre>
+
+<h4>
+<a id="variables" class="anchor" href="#variables" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Variables</h4>
+
+<p>Most standard Python operations are available although ++ += -- -= are discouraged as they are not available in BASIC
+Comparison operations are a little more complicated. Currently supported are = &lt; &gt;. &gt;= =&gt; &lt;&gt; NOT() are planned</p>
+
+<h5>
+<a id="str" class="anchor" href="#str" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>STR$</h5>
+
+<p>Casts a value to string</p>
+
+<pre><code>a = 10
+b = STR$(a)
+' b is '10' not 10
+</code></pre>
+
+<h5>
+<a id="int" class="anchor" href="#int" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>INT</h5>
+
+<p>Casts a value to integer</p>
+
+<pre><code>a = 10.6789
+b = INT(a)
+' b is 10 not 10.6789
+</code></pre>
+
+<h5>
+<a id="rnd" class="anchor" href="#rnd" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>RND</h5>
+
+<p>Returns a random number between 0 &amp; 1</p>
+
+<pre><code>dice = INT(RND * 6 + 1)
+</code></pre>
+
+<h5>
+<a id="shaken" class="anchor" href="#shaken" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>SHAKEN</h5>
+
+<p>True or False depending on whether or not the device was shaken since it was last called</p>
+
+<pre><code>WHILE 1
+    IF SHAKEN THEN
+        times = times + 1
+        SHOW times
+    END IF
+WEND
+</code></pre>
+
+<h5>
+<a id="receive" class="anchor" href="#receive" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>RECEIVE$</h5>
+
+<p>Returns the latest message received by the radio</p>
+
+<pre><code>IF RECEIVE$ = "hi" THEN
+    PRINT "hi"
+END IF
+</code></pre>
+
+<h4>
+<a id="python--end-python" class="anchor" href="#python--end-python" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>PYTHON .. END PYTHON</h4>
+
+<p>allows the use of pure python code in a Tiborcim script
+e.g.:</p>
+
+<pre><code>PYTHON
+a = 'hi'
+a += ' again'
+END PYTHON
+
+PRINT a
+</code></pre>
+
+<h4>
+<a id="sub--end-sub" class="anchor" href="#sub--end-sub" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>SUB .. END SUB</h4>
+
+<p>Create a subroutine. subroutines are like functions but do not return a value.
+SUBs </p>
+
+<pre><code>SUB test
+    PRINT "Hi"
+END SUB
+
+test()
+</code></pre>
+
+<h4>
+<a id="for--next" class="anchor" href="#for--next" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>FOR .. NEXT</h4>
+
+<p>// TODO: explain</p>
+
+<h2>
+<a id="what-is-it-written-in" class="anchor" href="#what-is-it-written-in" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What is it written in?</h2>
+
+<p>The 'compiler' and sample DE (I would say IDE but it isn't) are written in Python 3. I aim to be as Pythonic a possible.</p>
+
+<h3>
+<a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dependencies</h3>
+
+<p>The goal is to have a few dependencies as possible outside the package itself hence our current editor uses Tkinter although a GTK3 (PyGObject) environment is planned as an optional extra.</p>
+
+<h2>
+<a id="why-the-name" class="anchor" href="#why-the-name" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Why the name?</h2>
+
+<p>Write it backwards.</p>
+
+<h3>
+<a id="seriously" class="anchor" href="#seriously" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Seriously</h3>
+
+<p>Imaginative I know. Other name's were considered but just didn't feel right</p>
+
+<h3>
+<a id="how-do-you-say-that" class="anchor" href="#how-do-you-say-that" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How do you say that?!</h3>
+
+<p><code>Tib - or - kim</code> is how I say it aloud. I'm aware that is not how it's written but as the author i retain the right to be akward with my naming</p>
+
+<h2>
+<a id="notes" class="anchor" href="#notes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Notes</h2>
+
+<p>GitHub shows commits at weird times. unfortunately this occurred through a combination of a incorrectly set clock and a corrupted <code>.git</code> directory. long story short some commits show twice, some not at all &amp; others at 1 o'clock in the morning for no apparent reason.</p>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
