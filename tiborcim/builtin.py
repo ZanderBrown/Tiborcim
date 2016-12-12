@@ -57,8 +57,8 @@ INT.replacement = r'int(\1)'
 
 SCREEN = lang.Item('SCREEN')
 SCREEN.inline = True
-SCREEN.argcount = 3
-SCREEN.replacement = r'display.get_pixel(\1,\2,\3)'
+SCREEN.argcount = 2
+SCREEN.replacement = r'display.get_pixel(\1,\2)'
 
 BUILTINS = [PRINT,
             PSET,

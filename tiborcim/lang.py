@@ -23,7 +23,7 @@ class Item:
         regex += self.name
         if self.inline:
             if self.argcount > 0:
-                regex += r'\b\(\W?([^,]*)\W?'
+                regex += r'\b\W?\(\W?([^,]*)\W?'
                 for x in range(1, self.argcount):
                     regex += ',\W?([^,]*)\W?'
                 regex += r'\)(?=([^\"]*\"[^\"]*\")*[^\"]*$)'

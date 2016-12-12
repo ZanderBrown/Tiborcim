@@ -73,9 +73,6 @@ class compiler:
                 stripedline = re.sub("INKEY\$(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "read_keys()", stripedline)
 
                 """
-                # SCREEN
-                line = re.sub("SCREEN(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "display.get_pixel", stripedline)
-
                 # STR$
                 line = re.sub("STR\$(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "str", stripedline)
 
@@ -98,32 +95,6 @@ class compiler:
                         self.random_imported = True
                 stripedline = re.sub("RND(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "random.random()", stripedline)
 
-                """
-                # SCREEN
-                line = re.sub("SHAKEN(?=([^\"]*\"[^\"]*\")*[^\"]*$)", "accelerometer.was_gesture(\"shake\")", stripedline)
-
-                # NOT
-                if re.search(self.regexs['NOT'], stripedline) is not None:
-                    self.print_output(re.sub(self.regexs['NOT'], '!', stripedline))
-                    continue
-                
-                # AND
-                if re.search(self.regexs['AND'], stripedline) is not None:
-                    self.print_output(re.sub(self.regexs['AND'], 'and', stripedline))
-                    continue
-
-                # OR
-                if re.search(self.regexs['OR'], stripedline) is not None:
-                    self.print_output(re.sub(self.regexs['OR'], 'or', stripedline))
-                    continue
-
-                # PRINT
-                if re.search(self.regexs['PRINT'], stripedline) is not None:
-                    # Wrap the argument in str() because display.scroll only accepts strings
-                    self.print_output(re.sub(self.regexs['PRINT'], r'display.scroll(str(\1))', stripedline))
-                    continue
-                """
-
                 # BROADCAST
                 if re.search(self.regexs['BROADCAST'], stripedline) is not None:
                     self.print_output(re.sub(self.regexs['BROADCAST'], r'radio.send(str(\1))', stripedline))
@@ -143,28 +114,6 @@ class compiler:
                     else:
                         self.print_output('radio.off()')
                     continue
-
-                """
-                # SHOW
-                m = re.search('(?:^SHOW)', stripedline)
-                if m is not None:
-                    self.print_output('display.show(str(' + stripedline[4:].strip() + '))')
-                    continue
-
-                # IMAGE
-                m = re.search('(?:^IMAGE)', stripedline)
-                if m is not None:
-                    # cast string (of form "12345:67890....") to Micro:Bit image
-                    self.print_output('display.show(Image(' + stripedline[5:].strip() + '))')
-                    continue
-
-                # SLEEP
-                m = re.search('(?:^SLEEP)', stripedline)
-                if m is not None:
-                    # Multiply the argument by 1000 to convert to miliseconds
-                    self.print_output('sleep((' + stripedline[5:].strip() + ')*1000)')
-                    continue
-                """
 
                 # SUB
                 m = re.search('(?:^SUB) (\w+)', stripedline)
@@ -191,13 +140,6 @@ class compiler:
                     if m is not None:
                         self.print_output(stripedline)
 
-                """
-                # PSET
-                if re.search(self.regexs['PSET'], stripedline) is not None:
-                    self.print_output(re.sub(self.regexs['PSET'], r'display.set_pixel(\1,\2,\3)', line.strip()))
-                    continue
-                """
-
                 # IF
                 m = re.search('(?:^IF)', stripedline)
                 if m is not None:
@@ -214,14 +156,6 @@ class compiler:
                     self.print_output('elif (' + str.strip(stripedline[6:-5]) + '):')
                     self.indent_level += 1
                     continue
-
-                """
-                # Comment
-                m = re.search('(?:^\')', stripedline)
-                if m is not None:
-                    self.print_output('#' + stripedline)
-                    continue
-                """
 
                 # END IF
                 m = re.search('(?:^END IF)', stripedline)
